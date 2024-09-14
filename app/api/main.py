@@ -4,12 +4,14 @@ from flask_compress import Compress
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from terrain import create_triangular_paths, fetch_terrain
+from terrain import create_triangular_paths, fetch_terrain, calculate_distance
 from utils import df_to_graph
+from gpt_utils import get_chatgpt_response, format_prompt
+
 from concurrent.futures import ThreadPoolExecutor
 import json
 from collections import Counter
-import subprocess
+from country import get_country_from_coords
 
 
 # ---- Init flask ---- #
@@ -26,24 +28,21 @@ CORS(app, origins=['http://localhost:3000'])
 vehicles_df: pd.DataFrame = pd.read_csv('../../data/static/vehicle-definitions.csv')
 terrain_df: pd.DataFrame = pd.read_csv('../../data/static/terrain-definitions.csv')
 terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/terrain-vehicle-matrix.csv'))
-
+strategies_df:pd.DataFrame = pd.read_csv('../../data/static/strategy-definitions.csv')
 
 # ---- PROCESSING ---- #
 
 def process_form_data(data):
-    print ('BREAK THIS IS A BREAK')
-    print("Form Data Received:", data)
 
+    # -- Generating paths -- #
     # Create paths with triangular deviations
     paths = create_triangular_paths(
-        (float(data['start-lat']), float(data['start-long'])),
+        (float(data['start-lat']), float(data['start-lon'])),
         (float(data['end-lat']), float(data['end-lon'])),
         5,  # Number of paths
         4,  # Number of path breaks
         0.4  # Deviation factor
     )
-
-    print('Created paths')
 
     def fetch_terrain_for_paths(paths):
         """Fetch terrain information for each path and count occurrences of each terrain type."""
@@ -104,6 +103,60 @@ def process_form_data(data):
     with open('tmp.json', 'w+') as file:
         json.dump(terrain_count_with_paths, file, indent=4)
 
+    # -- Generate an AI response -- #
+    api_key:str = data.get('openai-api-key', '')
+    model_name:str = data.get('openai-model', '')
+
+    print('api_key:', api_key)
+    print('model_name:', model_name)
+
+    if api_key and model_name: 
+
+        # Get the terrains from the terrain counts
+        terrains:list[str] = []
+        for d in terrain_count_with_paths.values():
+            these_terrains:list[str] = d['terrain_counts'].keys()
+            terrains.extend(these_terrains)
+        
+        terrains = list(set(terrains))
+
+        # Get the vehicles based on the inputs 
+        all_vehicle_ids:list[str] = vehicles_df['vehicle_id'].values
+        vehicles:list[str] = []
+        for vid in all_vehicle_ids: 
+            if vid in data: 
+                vehicles.append(vehicles_df.loc[vehicles_df['vehicle_id'] == vid]['vehicle_name'].values[0])
+
+        with open('vehicles.json', 'w+') as file:
+            json.dump(vehicles, file, indent=4)
+
+        # Create a dict with the input params to construct the prompt for the model
+        model_prompt_inputs:dict = {
+            'start-location': (data['start-lat'], data['start-lon']),
+            'start-country': get_country_from_coords(data['start-lat'], data['start-lon']),
+            'target-location': (data['end-lat'], data['end-lon']),
+            'straight-distance': calculate_distance(data['start-lat'], data['start-lon'], data['end-lat'], data['end-lon']),
+            'terrains': terrains,
+            'total-personnel': data['personnel'],
+            'target-time-on-obj': data['target-time-on-obj'],
+            'expected-resistance': data['resistance'],
+            'strategy': data['strategy'], 
+            'strategy-description': strategies_df.loc[strategies_df['strategy_name'] == data['strategy']]['strategy_description'].values[0],
+            'primary-objective': data['objective']
+        }
+
+        with open('model_params.json', 'w+') as file:
+            json.dump(model_prompt_inputs, file, indent=4)
+
+        response:str = get_chatgpt_response(
+            format_prompt(model_prompt_inputs),
+            data['openai-api-key'],
+            data['openai-model']
+        )
+    else: 
+
+        response:str = "[Not given OpenAI API key or model name]"
+
     print('Done processing')
 
     try:
@@ -117,7 +170,8 @@ def process_form_data(data):
     return {
         'status': 'success',
         'message': 'Form submitted successfully',
-        'paths': terrain_count_with_paths  # Include terrain counts in the result
+        'paths': terrain_count_with_paths,
+        'ai_response': response  
     }
 
 
@@ -126,6 +180,7 @@ def process_form_data(data):
 def submit_form():
     form_data = request.form
     result = process_form_data(dict(form_data))
+
     return jsonify(result)
 
 
