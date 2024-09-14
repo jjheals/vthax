@@ -1,0 +1,37 @@
+:root { 
+  --hamburger-width: 30px;
+}
+
+.hamburger { 
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  width: var(--hamburger-width);
+  height: var(--hamburger-width);
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.hamburger-component { 
+  width: 100%;
+  border: 2px solid black;
+  border-radius: 2rem;
+  z-index: inherit;
+  transition: 0.2s ease-in-out;
+}
+
+/* Animation for open state of hamburger (optional) */
+.hamburger.open .hamburger-component:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 7px);
+}
+
+.hamburger.open .hamburger-component:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open .hamburger-component:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -7px);
+}

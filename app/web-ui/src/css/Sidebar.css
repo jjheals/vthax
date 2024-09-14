@@ -1,0 +1,103 @@
+/* Sidebar.css */
+
+.sidebar { 
+    position: fixed;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    width: 35vw;
+    height: 100vh;
+    padding-left: 2%;
+    padding-right: 2%;
+    z-index: 1;
+    background-color: var(--nav-bar-color);
+    border-bottom: var(--nav-bar-border);
+    transition: 0.2s ease-in-out;
+    background-color: rgba(9, 0, 41, 0.453);
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar.closed { 
+    transform: translateX(-100%);
+}
+
+.sidebar-title, .sidebar-section-header { 
+    font-family: monospace;
+}
+
+.sidebar-title { 
+    text-transform: capitalize;
+    font-size: 24px;
+    text-align: left;
+    padding-left: 75px; /* Offset the hamburger */
+}
+
+.sidebar-section-header { 
+    font-size: 20px;
+    color: black;
+}
+
+.input-row { 
+    display: flex; 
+    align-items: center; /* Vertically center items within the row */
+    font-size: 18px;
+    padding: 0;
+    height: 30px; /* Adjust height as needed */
+    margin-bottom: 2px;
+}
+
+.input-row label { 
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.info-icon {
+    width: 15px; /* Adjust size as needed */
+    height: 15px; /* Adjust size as needed */
+    border-radius: 50%; /* Makes it circular */
+    background-color: grey; /* Background color for the circle */
+    display: flex;
+    align-items: center; /* Center the text vertically */
+    justify-content: center; /* Center the text horizontally */
+    color: white; /* Text color */
+    font-size: 10px; /* Adjust text size */
+    font-weight: bold; /* Make text bold */
+    text-align: center;
+    border: 1px solid black; /* Optional: Border around the circle */
+    margin-left: 5px;
+    margin-bottom: 10px;
+}
+
+.info-icon:hover .info-tooltip {
+    display: block;
+}
+
+.info-tooltip {
+    display: none;
+    background-color: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    width: 500px;
+    z-index: 10;
+    margin-bottom: 50px;
+}
+
+
+/* ---- Specific input sections ---- */
+.vehicle-input-checkbox { 
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.loc-input { 
+    font-size: 14px;
+    width: 75px;
+}
