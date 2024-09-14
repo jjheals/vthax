@@ -1,9 +1,6 @@
 import pandas as pd
 import numpy as np
 import json
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 
 # Load terrain data
 with open('tmp.json', 'r') as f:
@@ -53,47 +50,35 @@ def calculate_path_costs(terrain_counts, vehicle, costs_matrix):
                     total_cost += np.inf  # Impossible route, so set to infinity
     return total_cost if total_cost != np.inf else np.nan
 
-# Calculate costs
+# Calculate costs for each vehicle
 vehicles = ['Helicopter', 'Boat', 'Car', 'Foot']
-cost_df = pd.DataFrame({
-    vehicle: [
-        calculate_path_costs(terrain_df.loc[path].to_dict(), vehicle, costs_matrix)
+all_costs = []
+for vehicle in vehicles:
+    costs_for_vehicle = [
+        (path, vehicle, calculate_path_costs(terrain_df.loc[path].to_dict(), vehicle, costs_matrix))
         for path in terrain_df.index
     ]
-    for vehicle in vehicles
-}, index=terrain_df.index)
+    all_costs.extend(costs_for_vehicle)
 
-# Replace NaNs (which represent infinite costs) with a large value (e.g., 1000)
-cost_df.replace(np.nan, 1000, inplace=True)
+# Convert to DataFrame and sort by cost
+cost_df = pd.DataFrame(all_costs, columns=['Path', 'Vehicle', 'Cost'])
+cost_df = cost_df.sort_values(by='Cost')
 
-# Combine terrain data and cost data into a single DataFrame
-df_paths = terrain_df.join(cost_df)
+# Get top 5 path/vehicle combinations
+top_5_combos = cost_df.head(5)
 
-# Print the cleaned DataFrame
-print("Cleaned DataFrame:")
-print(df_paths)
+# Format output for top 5 combos
+top_5_dict = {}
+for _, row in top_5_combos.iterrows():
+    path = row['Path']
+    vehicle = row['Vehicle']
+    cost = row['Cost']
+    if path not in top_5_dict:
+        top_5_dict[path] = {}
+    top_5_dict[path][vehicle] = cost
 
-# Replace NaNs with zero for machine learning model (you can also leave them as they are if that's part of your logic)
-df_paths.fillna(0, inplace=True)
+# Save top 5 path/vehicle combos to JSON with prettified formatting
+with open('top_5_combos_pretty.json', 'w') as f:
+    json.dump(top_5_dict, f, indent=4)
 
-# Create a dummy label column for the sake of this example
-df_paths['label'] = np.random.choice([0, 1], size=len(df_paths))  # Example label
-
-# Split data into features and labels
-X = df_paths.drop('label', axis=1)
-y = df_paths['label']
-
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Initialize and train a Random Forest model
-model = RandomForestClassifier(random_state=42)
-model.fit(X_train, y_train)
-
-# Predict and evaluate
-y_pred = model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-
-print(f"Model Accuracy: {accuracy:.2f}")
-print("Predictions on test set:")
-print(y_pred)
+print("Top 5 combinations have been saved to prettified JSON file.")
