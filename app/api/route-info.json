@@ -1,122 +1,53 @@
 {
-    "distance_km": 1034,
+    "distance_km": 373,
     "intermediate_terrain_info": [
         {
-            "lat": 31.19047619047619,
-            "lon": 49.523809523809526,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 31.38095238095238,
-            "lon": 49.04761904761905,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 31.571428571428573,
-            "lon": 48.57142857142857,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 31.761904761904763,
-            "lon": 48.095238095238095,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 31.952380952380953,
-            "lon": 47.61904761904762,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 32.142857142857146,
-            "lon": 47.142857142857146,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 32.333333333333336,
-            "lon": 46.666666666666664,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 32.523809523809526,
-            "lon": 46.19047619047619,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 32.714285714285715,
-            "lon": 45.714285714285715,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 32.904761904761905,
-            "lon": 45.23809523809524,
+            "lat": 33.763625,
+            "lon": 48.7390125,
             "terrain": "flatlands"
         },
         {
-            "lat": 33.095238095238095,
-            "lon": 44.76190476190476,
+            "lat": 34.03945,
+            "lon": 49.122225,
+            "terrain": "Unknown"
+        },
+        {
+            "lat": 34.315275,
+            "lon": 49.5054375,
+            "terrain": "Unknown"
+        },
+        {
+            "lat": 34.5911,
+            "lon": 49.88865,
             "terrain": "flatlands"
         },
         {
-            "lat": 33.285714285714285,
-            "lon": 44.285714285714285,
-            "terrain": "water, flatlands"
-        },
-        {
-            "lat": 33.476190476190474,
-            "lon": 43.80952380952381,
-            "terrain": "water, military"
-        },
-        {
-            "lat": 33.666666666666664,
-            "lon": 43.333333333333336,
+            "lat": 34.866925,
+            "lon": 50.271862500000005,
             "terrain": "Unknown"
         },
         {
-            "lat": 33.857142857142854,
-            "lon": 42.85714285714286,
-            "terrain": "Unknown"
+            "lat": 35.14275,
+            "lon": 50.655075000000004,
+            "terrain": "flatlands, water"
         },
         {
-            "lat": 34.04761904761905,
-            "lon": 42.38095238095238,
-            "terrain": "water, flatlands"
-        },
-        {
-            "lat": 34.23809523809524,
-            "lon": 41.904761904761905,
-            "terrain": "Unknown"
-        },
-        {
-            "lat": 34.42857142857143,
-            "lon": 41.42857142857143,
-            "terrain": "water"
-        },
-        {
-            "lat": 34.61904761904762,
-            "lon": 40.95238095238095,
-            "terrain": "flatlands"
-        },
-        {
-            "lat": 34.80952380952381,
-            "lon": 40.476190476190474,
+            "lat": 35.418575000000004,
+            "lon": 51.0382875,
             "terrain": "Unknown"
         },
         {
             "terrain_counts": [
                 {
-                    "terrain": "Unknown",
-                    "count": 13
-                },
-                {
                     "terrain": "flatlands",
-                    "count": 5
+                    "count": 3
                 },
                 {
-                    "terrain": "water",
+                    "terrain": "Unknown",
                     "count": 4
                 },
                 {
-                    "terrain": "military",
+                    "terrain": "water",
                     "count": 1
                 }
             ]
@@ -124,14 +55,14 @@
     ],
     "route": [
         {
-            "lat": 31.0,
-            "lon": 50.0,
-            "terrain": "Unknown"
+            "lat": 33.4878,
+            "lon": 48.3558,
+            "terrain": "urban"
         },
         {
-            "lat": 35.0,
-            "lon": 40.0,
-            "terrain": "Unknown"
+            "lat": 35.6944,
+            "lon": 51.4215,
+            "terrain": "flatlands, water, urban"
         }
     ]
 }
