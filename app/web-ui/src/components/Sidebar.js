@@ -79,17 +79,21 @@ const Sidebar = ({ mapInstance }) => {
             // Determine class label based on terrain counts
             const terrainLabels = getClassLabels(pathTerrainCounts);
 
+            // Get the color for this line
+            const lineColor = colors[i % colors.length];
+
             // Create the path line
-            const path = L.polyline(pathCoordinates, { color: colors[i % colors.length] });
+            const path = L.polyline(pathCoordinates, { color: lineColor });
 
             // Add a popup that appears on hover of the line
             path.on('mouseover', (e) => {
                 const polyline = e.target;
-    
+                
+                
                 polyline.bindTooltip(
                     `<div class="polyline-tooltip">
                         <div class="polyline-title-row">
-                            <div class="polyline-color-icon"></div>
+                            <div class="polyline-color-icon" style="background-color: ${lineColor}"></div>
                             <p class="polyline-title">${pathName}</p>
                         </div>
                         <table class="polyline-table">
@@ -129,7 +133,14 @@ const Sidebar = ({ mapInstance }) => {
      */
     const submitForm = async (e) => { 
         e.preventDefault();
-    
+        
+        // Clear old markers from the map
+        mapInstance.eachLayer((layer) => {
+            if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+                mapInstance.removeLayer(layer);
+            }
+        });
+
         const formData = new FormData(e.target);
 
         try {
@@ -144,24 +155,25 @@ const Sidebar = ({ mapInstance }) => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
     
-            // Get the response data
+            // Get the response data and set the paths on the map
             const responseData = await response.json();
-            console.log('Response:', responseData);
-
             setPossiblePaths(responseData.paths);
-
+            
             // Example coordinates where you want to place the text box
             const lat = 51.505;
             const lng = -0.09;
 
             // Create a custom divIcon with the AI response
             const textBoxIcon = L.divIcon({
-            html: `<div class="ai-response-box">${responseData.ai_response}</div>`
+                className: 'ai-response-box-container',
+                html: `<div class="ai-response-box">${responseData.ai_response}</div>`
             });
 
             // Create a marker using the custom divIcon
             const marker = L.marker([lat, lng], { icon: textBoxIcon }).addTo(mapInstance);
-    
+            
+            mapInstance.scrollWheelZoom.disable();
+
         } catch (error) {
             console.error('Error:', error);
         }
