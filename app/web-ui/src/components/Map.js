@@ -110,6 +110,13 @@ const Map = ({ data }) => {
     }
 
 
+    function getPossiblePaths(start_loc, end_loc) { 
+
+
+        // Create a polyline from the path coordinates
+        //const path = L.polyline(pathCoordinates, { color: 'blue' }).addTo(map);
+    }
+
     useEffect(() => { 
 
         // Initialize the map

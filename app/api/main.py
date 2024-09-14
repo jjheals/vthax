@@ -4,9 +4,8 @@ from flask_compress import Compress
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from terrain import get_elevation
+from terrain import get_elevation, create_random_paths
 from utils import df_to_graph
-
 
 # ---- Init flask ---- #
 app = Flask(__name__)
@@ -26,26 +25,21 @@ terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/t
 
 # ---- PROCESSING ---- #
 def process_form_data(data):
-    def get_vehicles():
-        vehicle_map = {
-            'ft': 'Foot',
-            'lv': 'Car',
-            'hc': 'Helicopter',
-            'bt': 'Boat'
-        }
 
-        selected_vehicles = ['Foot']
+    print("Form Data Received:", data)
 
-        for key, vehicle in vehicle_map.items():
-            if key != 'ft' and data.get(key) == 'on':
-                selected_vehicles.append(vehicle)
-
-        return selected_vehicles
-    
-    vehicles = get_vehicles()
-    print("Form Data Received:", data, '\n', vehicles)
     get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
-    return {'status': 'success', 'message': 'Form submitted successfully'}
+
+    paths = create_random_paths(
+        (float(data['start-lat']), float(data['start-long'])),
+        (float(data['end-lat']), float(data['end-lon'])),
+        5, 
+        5
+    )
+
+    print('created paths')
+
+    return {'status': 'success', 'message': 'Form submitted successfully', 'paths': paths}
 
 
 # ---- ENDPOINTS ---- #
@@ -54,6 +48,7 @@ def submit_form():
     form_data = request.form
     result = process_form_data(dict(form_data))
     return jsonify(result)
+
 
 @app.route('/get-input-params', methods=['GET'])
 def get_input_params():
@@ -93,6 +88,15 @@ def get_input_params():
 
     return jsonify({'data': data})
 
+
+@app.route('/get-paths', methods=['GET'])
+def get_paths(): 
+    args = request.args
+    print('args')
+    print(args)
+
+
+    return jsonify({'paths': create_random_paths()})
 
 # ---- Run forever ---- $
 if __name__ == '__main__':
