@@ -1,0 +1,7 @@
+﻿terrain_id,terrain_name,description
+wt,Water,Large body of water only traversable by boat or helicopter.
+df,Dense Forest,"Forest that would be slow to travel by foot, impossible by car. Includes jungles."
+sf,Sparse Forest,Forest that would be relatively slow to travel by foot or car.
+ll,Loose Land,"Land such as beaches, deserts, or other terrain that is walkable but time consuming."
+sl,Solid Land,Land that can be travelled by foot at a normal rate or by car at a faster rate.
+mt,Mountainous,"Region containing mountains that will slow down  land travel, but can be bypassed by air vehicles."

@@ -1,0 +1,5 @@
+﻿vehicle_id,vehicle_name,description
+ft,Foot,Travel by foot. Assumed in all scenarios.
+lv,Land Vehicle,"Land vehicles such as cars, humvees, convoys."
+hc,Helicopter,"Aerial vehicles that are able to travel far distances over land, sea, or mountainous regions."
+bt,Boat,"Water vehicles that can travel far distances over water, such as a sea or river."
