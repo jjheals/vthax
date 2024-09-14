@@ -1,10 +1,14 @@
+// src/components/Sidebar.js
+
 import React, { useEffect, useState } from 'react';
 import Hamburger from './Hamburger';
 import { options } from '../config.js';
-
+import L from 'leaflet';
+import { useMap } from 'react-leaflet';
 import '../css/Sidebar.css'; 
 
-const Sidebar = () => {
+
+const Sidebar = ({ mapInstance }) => {
     const [isSidebarOpen, setIsOpen] = useState(false);
     const [inputParams, setInputParams] = useState({
         'vehicles': [],
@@ -15,6 +19,17 @@ const Sidebar = () => {
     const [vehiclesParams, setVehicleParams] = useState([]);
     const [strategyParams, setStrategyParams] = useState([]);
     const [objectiveParams, setObjectiveParams] = useState([]);
+    const [possiblePaths, setPossiblePaths] = useState([]);
+
+    const colors = [
+        'red',
+        'blue',
+        'green',
+        'orange',
+        'purple',
+        'yellow',
+        'grey'
+    ]
 
     /**
      * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
@@ -23,6 +38,18 @@ const Sidebar = () => {
     const toggleSidebar = () => {
         setIsOpen(!isSidebarOpen);
     };
+
+
+    function displayPathsOnMap(paths) { 
+
+        var i = 0;
+        paths.forEach(pathCoordinates => {
+            // Create a polyline from the path coordinates
+            const path = L.polyline(pathCoordinates, { color: colors[i % paths.length] }).addTo(mapInstance);
+            i+=1;
+        });
+        
+    }
 
 
     /**
@@ -58,6 +85,8 @@ const Sidebar = () => {
             // Get the response data
             const responseData = await response.json();
             console.log('Response:', responseData);
+
+            setPossiblePaths(responseData.paths);
     
         } catch (error) {
             console.error('Error:', error);
@@ -94,8 +123,9 @@ const Sidebar = () => {
         fetchInputParams();
     }, []);
 
-
-
+    useEffect(() => { 
+        displayPathsOnMap(possiblePaths);
+    }, [possiblePaths, mapInstance]);
 
     useEffect(() => {
         try { setVehicleParams(inputParams.vehicles); }
