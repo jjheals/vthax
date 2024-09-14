@@ -3,3 +3,7 @@ flask
 flask_compress
 flask_cors 
 gevent
+geopy
+requests
+numpy
+pandas
