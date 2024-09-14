@@ -44,10 +44,6 @@ costs_matrix = costs_matrix.loc[common_terrains]
 def calculate_path_costs(terrain_counts, vehicle, costs_matrix):
     total_cost = 0
     for terrain, count in terrain_counts.items():
-
-        print('terrain:', terrain)
-        print('count:', count)
-        
         if count > 0:
             if terrain in costs_matrix.index:
                 cost = costs_matrix.at[terrain, vehicle]
