@@ -1,6 +1,6 @@
 ﻿terrain_id,terrain_name,description
 wt,Water,"Large body of water only traversable by boat or helicopter."
-df,Forest,"Forest that would be slow to travel by foot, impossible by car. Includes jungles."
+fs,Forest,"Forest that would be slow to travel by foot, impossible by car. Includes jungles."
 fl,Flat Lands,"Land such as grasslands, meadows, and agricultural terrain that is very easily walkable."
 ub,Urban,"Land that is densely populated with civilian infrastructure but easily walkable."
 tr,Transport,"Land that has roads and railway, making it very walkable and driveable."
