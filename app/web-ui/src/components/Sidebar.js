@@ -250,7 +250,7 @@ const Sidebar = ({ mapInstance }) => {
                         <div className='input-row'>
                             <label>Starting Location</label>
                             <input type='text' className='loc-input' id='start-lat-input' name='start-lat' placeholder='lat'></input>
-                            <input type='text' className='loc-input' id='start-long-input' name='start-long' placeholder='lon'></input>
+                            <input type='text' className='loc-input' id='start-long-input' name='start-lon' placeholder='lon'></input>
                         </div>
                         <div className='input-row'>
                             <label>Objective Location</label>
