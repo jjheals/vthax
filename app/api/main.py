@@ -9,6 +9,7 @@ from utils import df_to_graph
 from concurrent.futures import ThreadPoolExecutor
 import json
 from collections import Counter
+import subprocess
 
 
 # ---- Init flask ---- #
@@ -105,6 +106,13 @@ def process_form_data(data):
 
     print('Done processing')
 
+    try:
+        subprocess.run(['python', 'path-model.py'], check=True)
+        print("path-model.py executed successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing path-model.py: {e}")
+
+
     # Return the result with paths and terrain counts
     return {
         'status': 'success',
@@ -117,14 +125,7 @@ def process_form_data(data):
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
     form_data = request.form
-    #result = process_form_data(dict(form_data))
-
-    with open('tmp.json', 'r') as file:
-        return jsonify({
-            'status': 'success',
-            'message': 'Form submitted successfully',
-            'paths': json.load(file)  # Include terrain counts in the result
-        })
+    result = process_form_data(dict(form_data))
     return jsonify(result)
 
 
