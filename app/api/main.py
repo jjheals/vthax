@@ -178,6 +178,7 @@ def process_form_data(data):
 # ---- ENDPOINTS ---- #
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
+    print('\033[92mForm submission.\033[0m')
     form_data = request.form
     result = process_form_data(dict(form_data))
 

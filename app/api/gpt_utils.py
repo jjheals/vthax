@@ -13,10 +13,11 @@ def format_prompt(inputs: dict) -> str:
         on objective is {} hours, and I expect {} resistance once on target. I want to conduct 
         a {} mission, specifically {}. My primary objective is to {}.
         Create a detailed plan for me to conduct an operation under these circumstances. Give 
-        me the response in a pretty HTML format that I can display on a webpage, with bolded 
-        headers etc. Put headers in <h1> tags, and any body content in <p> tags. Just give me
-        the content of your recommendation, no disclaimers or anything extra. I want as much
-        detail as possible, especailly around the execution of the operation.
+        me the response in a pretty HTML format that I can display on a webpage. Put headers 
+        in <h1> tags, and any body content in <p> tags. Just give me the content of your 
+        recommendation, no disclaimers or anything extra. I want as much detail as possible, 
+        especailly around the execution of the operation. I do not need you to re-summarize the 
+        parameters I just told you.
     """.strip()
 
     return prompt_template.format(
@@ -47,7 +48,7 @@ def get_chatgpt_response(prompt:str, api_key:str, model:str):
         messages=[
             {"role": "user", "content": prompt}
         ],
-        max_tokens=500,
+        max_tokens=700,
     )
 
     return response.choices[0].message.content
