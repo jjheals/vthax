@@ -149,6 +149,18 @@ const Sidebar = ({ mapInstance }) => {
             console.log('Response:', responseData);
 
             setPossiblePaths(responseData.paths);
+
+            // Example coordinates where you want to place the text box
+            const lat = 51.505;
+            const lng = -0.09;
+
+            // Create a custom divIcon with the AI response
+            const textBoxIcon = L.divIcon({
+            html: `<div class="ai-response-box">${responseData.ai_response}</div>`
+            });
+
+            // Create a marker using the custom divIcon
+            const marker = L.marker([lat, lng], { icon: textBoxIcon }).addTo(mapInstance);
     
         } catch (error) {
             console.error('Error:', error);
