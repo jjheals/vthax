@@ -53,13 +53,10 @@ def categorize_terrain(land_use_types):
     terrain_categories = {
         'forest': {'forest', 'wood', 'scrub'},
         'water': {'water'},
-        'flatlands': {'meadow', 'grass'},
-        'urban': {'retail', 'commercial', 'industrial', 'brownfield'},
+        'flatlands': {'meadow', 'grass', 'farmyard', 'farmland', 'orchard'},
+        'urban': {'retail', 'commercial', 'industrial', 'brownfield', 'recreation_ground', 'cemetery'},
         'transport': {'railway'},
-        'recreational': {'recreation_ground'},
-        'agricultural': {'farmyard', 'farmland', 'orchard'},
         'military': {'military'},
-        'cemetery': {'cemetery'},
         'unknown': {'Unknown'}
     }
 

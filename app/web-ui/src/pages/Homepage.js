@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import Sidebar from '../components/Sidebar.js';
-import Map from '../components/Map.js';
+// import Map from '../components/Map.js';
 
 const Homepage = () => {
     return(

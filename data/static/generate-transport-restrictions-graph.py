@@ -7,7 +7,7 @@ import numpy as np
 G = nx.Graph()
 
 # Nodes representing terrain types
-terrains:list[str] = ['Water', 'Dense Forest', 'Sparse Forest', 'Solid Land', 'Loose Land', 'Mountainous']
+terrains:list[str] = ['Water', 'Forest', 'Flat Lands', 'Urban', 'Transport', 'Military']
 
 # Vehicles
 vehicles:list[str] = ['Helicopter', 'Boat', 'Car', 'Foot']
@@ -27,34 +27,34 @@ weights:dict = {
     ('Water', 'Car'): float('inf'),
     ('Water', 'Foot'): float('inf'),
     
-    # DENSE FOREST
-    ('Dense Forest', 'Helicopter'): 2,
-    ('Dense Forest', 'Boat'): float('inf'),
-    ('Dense Forest', 'Car'): float('inf'),
-    ('Dense Forest', 'Foot'): 8,
+    # FOREST
+    ('Forest', 'Helicopter'): 2,
+    ('Forest', 'Boat'): float('inf'),
+    ('Forest', 'Car'): float('inf'),
+    ('Forest', 'Foot'): 7,
 
-    # SPARSE FOREST
-    ('Sparse Forest', 'Helicopter'): 2,
-    ('Sparse Forest', 'Boat'): float('inf'),
-    ('Sparse Forest', 'Car'): 6,
-    ('Sparse Forest', 'Foot'): 5,
+    # FLAT LANDS
+    ('Flat Lands', 'Helicopter'): 1,
+    ('Flat Lands', 'Boat'): float('inf'),
+    ('Flat Lands', 'Car'): 5,
+    ('Flat Lands', 'Foot'): 4,
     
-    # SOLID LAND 
-    ('Solid Land', 'Helicopter'): 1,
-    ('Solid Land', 'Boat'): float('inf'),
-    ('Solid Land', 'Car'): 3,
-    ('Solid Land', 'Foot'): 3,
+    # URBAN 
+    ('Urban', 'Helicopter'): 1,
+    ('Urban', 'Boat'): float('inf'),
+    ('Urban', 'Car'): 4,
+    ('Urban', 'Foot'): 3,
     
-    # LOOSE LAND
+    # TRANSPORT
     ('Loose Land', 'Helicopter'): 1,
     ('Loose Land', 'Boat'): float('inf'),
-    ('Loose Land', 'Car'): 5,
-    ('Loose Land', 'Foot'): 7,
+    ('Loose Land', 'Car'): 1,
+    ('Loose Land', 'Foot'): 4,
     
-    # MOUNTAINOUS
-    ('Mountainous', 'Helicopter'): 2,
+    # MILITARY
+    ('Mountainous', 'Helicopter'): 10,
     ('Mountainous', 'Boat'): float('inf'),
-    ('Mountainous', 'Car'): float('inf'),
+    ('Mountainous', 'Car'): 10,
     ('Mountainous', 'Foot'): 10
 }
 
