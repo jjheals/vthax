@@ -32,6 +32,30 @@ def get_input_params():
                 'vehicle-name': r['vehicle_name'],
                 'vehicle-description': r['description']
             } for idx, r in vehicles_df.iterrows()
+        ],
+        'strategies': [
+            {
+                'strategy-id': 'aggressive',
+                'strategy-name': 'Aggressive'
+            },
+            {
+                'strategy-id': 'stealth',
+                'strategy-name': 'Stealth'
+            }
+        ],
+        'objectives': [
+            {
+                'objective-id': 'def',
+                'objective-name': 'Defensive (Hold position)'
+            },
+            {
+                'objective-id': 'hvt',
+                'objective-name': 'Capture/Extract HVT'
+            },
+            {
+                'objective-id': 'inf',
+                'objective-name': 'Infiltrate Target'
+            }
         ]
     }
 

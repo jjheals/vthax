@@ -7,18 +7,28 @@ import '../css/Sidebar.css';
 const Sidebar = () => {
     const [isSidebarOpen, setIsOpen] = useState(false);
     const [inputParams, setInputParams] = useState({
-        'vehicles': []
+        'vehicles': [],
+        'strategies': [],
+        'objectives': []
     });
 
     const [vehiclesParams, setVehicleParams] = useState([]);
     const [strategyParams, setStrategyParams] = useState([]);
+    const [objectiveParams, setObjectiveParams] = useState([]);
 
-
+    /**
+     * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
+     * @returns { null }
+     */
     const toggleSidebar = () => {
         setIsOpen(!isSidebarOpen);
     };
 
 
+    /**
+     * @constant submitForm event handler for submitting the user input params form from the sidebar 
+     * @param { Event } e 
+     */
     const submitForm = async (e) => { 
         e.preventDefault();
 
@@ -56,7 +66,7 @@ const Sidebar = () => {
 
 
     /**
-     * @function getData retrieves the data from the API on init of the page.
+     * @function getInputParamsData retrieves the data from the API on init of the page.
      * @returns { null }
      */
     async function getInputParamsData() { 
@@ -90,6 +100,13 @@ const Sidebar = () => {
     useEffect(() => {
         try { setVehicleParams(inputParams.vehicles); }
         catch { console.log('not given vehicles'); } 
+
+        try { setStrategyParams(inputParams.strategies); }
+        catch { console.log('not given strategies'); } 
+
+        try { setObjectiveParams(inputParams.objectives); }
+        catch { console.log('not given objectives'); } 
+
     }, [inputParams]);
 
 
@@ -146,28 +163,59 @@ const Sidebar = () => {
                         <div className='input-row'>
                             <label>Objective Location</label>
                             <input type='number' className='loc-input' id='end-lat-input' name='end-lat'  placeholder='lat'></input>
-                            <input type='number' className='loc-input' id='end-long-input' name='end-lat' placeholder='lon'></input>
+                            <input type='number' className='loc-input' id='end-long-input' name='end-lon' placeholder='lon'></input>
                         </div>
                     </div>
 
                     {/* Logistics section */}
                     <div className='sidebar-section'>
-                        <div className='input-row'>
-                            <label>Total Personnel</label><input type='number' name='personnel' id='personnel-input'></input>
-                        </div>
-                        <div className='input-row'>
-                            <label>Target time on OBJ (hrs)</label><input type='number' name='target-time-on-obj' id='time-on-obj-input'></input>
-                        </div>
+                        <h3 className='sidebar-section-header'>Logistical Information</h3>
+
+                        <div className='input-row'><label>Total Personnel</label><input type='number' name='personnel' id='personnel-input'></input></div>
+                        <div className='input-row'><label>Target time on OBJ (hrs)</label><input type='number' name='target-time-on-obj' id='time-on-obj-input'></input></div>
+                        
                         <div className='input-row'>
                             <label>Strategy</label>
-                            <select id='strategy-input'>
+                            <select name='strategy' id='strategy-input'>
                                 {
-
+                                    strategyParams.length > 0 ? (
+                                        strategyParams.map(strategy => (
+                                            <option name={strategy['strategy-id']} key={strategy['strategy-id']} value={strategy['strategy-id']}>{strategy['strategy-name']}</option>
+                                        ))
+                                    ) : (
+                                        <option></option>
+                                    )
+                                }
+                            </select>
+                        </div>
+                    
+                        <div className='input-row'>
+                            <label>Objective</label>
+                            <select name='objective' id='objective-input'>
+                                {
+                                    objectiveParams.map(obj => (
+                                        <option name={obj['objective-id']} key={obj['objective-id']} value={obj['objective-id']}>{obj['objective-name']}</option>
+                                    ))
                                 }
                             </select>
                         </div>
                     </div>
 
+                    {/* Intelligence Section */}
+                    <div className='sidebar-section'>
+                        <h3 className='sidebar-section-header'>Known Intelligence</h3>
+
+                        <div className='input-row'>
+                            <label>Expected Resistance</label>
+                            <select name='resistance' id='resistance-input'>
+                                <option name='none' key='none' value='none'>None</option>
+                                <option name='low' key='low' value='low'>Low</option>
+                                <option name='med' key='med' value='med'>Medium</option>
+                                <option name='high' key='high' value='high'>High</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     {/* Submit button */}
                     <button type='submit'>Generate</button>
                 </form>
