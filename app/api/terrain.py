@@ -2,6 +2,8 @@ import requests
 from collections import Counter
 from geopy.distance import geodesic
 import numpy as np
+import json 
+
 
 
 def calculate_distance(start_lat, start_lon, end_lat, end_lon):
@@ -124,5 +126,66 @@ def get_elevation(start_lat, start_lon, end_lat, end_lon):
             {"lat": end_lat, "lon": end_lon, "terrain": end_terrain}
         ]
     }
-    print(route_info)
+    
+    with open('route-info.json', 'w+') as file:
+        json.dump(route_info, file, indent=4)
+
     return {'status': 200, 'data': route_info}
+
+
+import random
+from geopy.distance import great_circle
+
+def generate_random_waypoints(start:tuple[float, float], end:tuple[float, float], num_waypoints:int) -> list[tuple[int,int]]:
+    """
+    Generates random waypoints between a start and endpoint.
+    
+    Args: 
+        start (tuple[float, float]): starting latitude and longitude.
+        end (tuple[float, float]): ending latitude and longitude.
+        num_waypoints (int) number of random waypoints to generate.
+    
+    Returns 
+        list[tuple[float, float]]: list of tuples containing the waypoints.
+    """
+    waypoints:list[tuple[float, float]] = [start]
+    
+    # Generate random waypoints
+    for _ in range(num_waypoints):
+        # Randomly choose a fraction between 0 and 1 
+        fraction = random.uniform(0, 1)
+
+        # Add the fraction to the lat/long of the start and end to generate a random point between the two
+        lat:float = start[0] + fraction * (end[0] - start[0])
+        lon:float = start[1] + fraction * (end[1] - start[1])
+        waypoints.append((lat, lon))
+    
+    # Add the end location to the waypoints so we end in the right place 
+    waypoints.append(end)
+
+    # Return the populated list 
+    return waypoints
+
+
+def create_random_paths(start:tuple[float, float], end:tuple[float, float], num_waypoints:int, num_paths:int) -> list[list[tuple[float, float]]]:
+    """
+    Creates multiple random paths between a start and endpoint.
+    
+    Args: 
+        start (tuple[float, float]): starting latitude and longitude.
+        end (tuple[float, float]): ending latitude and longitude.
+        num_waypoints (int): number of random waypoints to generate.
+        num_paths (int): number of paths to generate
+
+    Returns: 
+        list[list[tuple[float, float]]]: list of lists containing paths, where each path is a list of tuples (lat, lon).
+    """
+    # Init empty list of paths
+    paths = []
+    
+    # Generate num_paths possible paths 
+    for _ in range(num_paths):
+        waypoints = generate_random_waypoints(start, end, num_waypoints)
+        paths.append(waypoints)
+    
+    return paths
