@@ -25,7 +25,7 @@ terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/t
 # ---- PROCESSING ---- #
 def process_form_data(data):
     print("Form Data Received:", data)
-    get_elevation(data[start-lat], data[start-long], data[end-lat], data[end])
+    get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
     return {'status': 'success', 'message': 'Form submitted successfully'}
 
 # ---- ENDPOINTS ---- #
@@ -114,7 +114,7 @@ def get_elevation(start_lat, start_lon, end_lat, end_lon):
             {"lat": end_lat, "lon": end_lon, "terrain": end_terrain}
         ]
     }
-
+    print(route_info)
     return {'status': 200, 'data': route_info}
 
 # ---- Run forever ---- $
