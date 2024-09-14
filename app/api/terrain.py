@@ -205,4 +205,3 @@ def create_triangular_paths(start:tuple[float, float], end:tuple[float, float], 
         paths.append(path)
     
     return paths
-

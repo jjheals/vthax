@@ -4,8 +4,12 @@ from flask_compress import Compress
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from terrain import get_elevation, create_triangular_paths
+from terrain import get_elevation, create_triangular_paths, fetch_terrain
 from utils import df_to_graph
+from concurrent.futures import ThreadPoolExecutor
+import json
+from collections import Counter
+
 
 # ---- Init flask ---- #
 app = Flask(__name__)
@@ -24,23 +28,87 @@ terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/t
 
 
 # ---- PROCESSING ---- #
-def process_form_data(data):
 
+def process_form_data(data):
+    print ('BREAK THIS IS A BREAK')
     print("Form Data Received:", data)
 
+    # Get elevation data
     get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
 
+    # Create paths with triangular deviations
     paths = create_triangular_paths(
         (float(data['start-lat']), float(data['start-long'])),
         (float(data['end-lat']), float(data['end-lon'])),
-        5, 
-        4,
-        0.4
+        5,  # Number of paths
+        4,  # Number of path breaks
+        0.4  # Deviation factor
     )
 
-    print('created paths')
+    print('Created paths')
 
-    return {'status': 'success', 'message': 'Form submitted successfully', 'paths': paths}
+    def fetch_terrain_for_paths(paths):
+        """Fetch terrain information for each path and count occurrences of each terrain type."""
+        
+        def fetch_terrain_for_single_path(path):
+            """Fetch terrain info for a single path and count terrain types."""
+            terrain_counts = Counter()
+            for lat, lon in path:
+                try:
+                    terrain_info = fetch_terrain(lat, lon)
+                    terrain_types = terrain_info.split(', ')
+                    for terrain_type in terrain_types:
+                        if terrain_type != "Unknown":
+                            terrain_counts[terrain_type] += 1
+                except Exception as e:
+                    print(f"Error fetching terrain for ({lat}, {lon}): {e}")
+
+            for i in range(len(path) - 1):
+                lat1, lon1 = path[i]
+                lat2, lon2 = path[i + 1]
+                
+                # Compute midpoint
+                mid_lat = (lat1 + lat2) / 2
+                mid_lon = (lon1 + lon2) / 2
+                
+                try:
+                    terrain_info = fetch_terrain(mid_lat, mid_lon)
+                    for terrain_type in terrain_types:
+                        if terrain_type != "Unknown":
+                            terrain_counts[terrain_type] += 1
+                except Exception as e:
+                    print(f"Error fetching terrain for midpoint ({mid_lat}, {mid_lon}): {e}")
+            
+            return terrain_counts
+
+        # Use ThreadPoolExecutor to process each path in parallel
+        with ThreadPoolExecutor(max_workers=min(len(paths), 10)) as executor:
+            # Map paths to the terrain counting function
+            terrain_counts_list = list(executor.map(fetch_terrain_for_single_path, paths))
+
+        # Convert terrain counts list into a dict format suitable for returning
+        result = [
+            {terrain: count for terrain, count in terrain_counts.items()}
+            for terrain_counts in terrain_counts_list
+        ]
+        return result
+
+    # Fetch terrain counts for each path
+    terrain_count = fetch_terrain_for_paths(paths)
+
+    # Write terrain counts to a file
+    with open('tmp.json', 'w+') as file:
+        json.dump(terrain_count, file, indent=4)
+
+    print('Done')
+
+    # Return the result with paths and terrain counts
+    return {
+        'status': 'success',
+        'message': 'Form submitted successfully',
+        'paths': paths,
+        'terrain_counts': terrain_count  # Include terrain counts in the result
+    }
 
 
 # ---- ENDPOINTS ---- #
