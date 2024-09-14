@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
-import { useMap } from 'react-leaflet';
 import '../css/Sidebar.css'; 
 
 
@@ -20,6 +19,7 @@ const Sidebar = ({ mapInstance }) => {
     const [strategyParams, setStrategyParams] = useState([]);
     const [objectiveParams, setObjectiveParams] = useState([]);
     const [possiblePaths, setPossiblePaths] = useState([]);
+    const [pathLayers, setPathLayers] = useState([]);
 
     const colors = [
         'red',
@@ -40,15 +40,47 @@ const Sidebar = ({ mapInstance }) => {
     };
 
 
+    /**
+     * @function displayPathsOnMap clears the paths currently shown on the map, and displays the new given paths 
+     * @param { Array<Array<Number, Number>>} paths a list of paths as lists of points (tuples/arrays)
+     */
     function displayPathsOnMap(paths) { 
 
-        var i = 0;
-        paths.forEach(pathCoordinates => {
-            // Create a polyline from the path coordinates
-            const path = L.polyline(pathCoordinates, { color: colors[i % paths.length] }).addTo(mapInstance);
-            i+=1;
-        });
+        // Clear previous path layers from the map
+        pathLayers.forEach(layer => mapInstance.removeLayer(layer));
         
+        // Create new path layers and store references
+        const newPathLayers = paths.map((pathCoordinates, index) => {
+
+            // Create the path line
+            const path = L.polyline(pathCoordinates, { color: colors[index % colors.length] });
+
+            // Add a popup that appears on hover of the line
+            path.on('mouseover', (e) => {
+                const polyline = e.target;
+                const latlngs = polyline.getLatLngs();
+                const pathLength = latlngs.length > 1 
+                    ? `Length: ${(L.latLng(latlngs[0]).distanceTo(L.latLng(latlngs[latlngs.length - 1])).toFixed(2)) / 1000} km`
+                    : 'Single point';
+    
+                polyline.bindTooltip(`<b>Path ${index + 1}</b><br>${pathLength}`, {
+                    permanent: false,
+                    direction: 'top'
+                }).openTooltip();
+            });
+
+            // Close tooltip on mouseout
+            path.on('mouseout', (e) => {
+                path.closeTooltip();
+            });
+
+            // Add the path to the map
+            path.addTo(mapInstance);
+            return path;
+        });
+
+        // Update state with new path layers
+        setPathLayers(newPathLayers);
     }
 
 
@@ -58,7 +90,7 @@ const Sidebar = ({ mapInstance }) => {
      */
     const submitForm = async (e) => { 
         e.preventDefault();
-
+    
         const formData = new FormData(e.target);
 
         // Convert FormData to a plain object (for easier logging)
@@ -123,10 +155,14 @@ const Sidebar = ({ mapInstance }) => {
         fetchInputParams();
     }, []);
 
+
+    // useEffect() => updates the map if the possible paths variable is updated
     useEffect(() => { 
         displayPathsOnMap(possiblePaths);
     }, [possiblePaths, mapInstance]);
 
+
+    // useEffect() => sets the parameters for user inputs when the API responds with the data 
     useEffect(() => {
         try { setVehicleParams(inputParams.vehicles); }
         catch { console.log('not given vehicles'); } 
@@ -138,9 +174,6 @@ const Sidebar = ({ mapInstance }) => {
         catch { console.log('not given objectives'); } 
 
     }, [inputParams]);
-
-
-
 
 
     return (
