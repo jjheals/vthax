@@ -27,7 +27,7 @@ def format_prompt(inputs: dict) -> str:
         inputs.get('start-country', ''),           # Starting country
         inputs['target-location'][0],                 # Target lat
         inputs['target-location'][1],                 # Target lon
-        inputs.get('straight-distance', 'unknown'),   # Straight line distance from start -> target
+        round(inputs.get('straight-distance', -1)),   # Straight line distance from start -> target
         ', '.join(inputs.get('terrains', [])),        # Terrains along path
         inputs.get('total-personnel', 'unknown'),     # Total personnel
         inputs.get('target-time-on-obj', 'unknown'),  # Time on OBJ
