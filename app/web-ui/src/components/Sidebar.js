@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
+import forge from 'node-forge';
+
 import '../css/Sidebar.css'; 
 
 
@@ -30,6 +32,7 @@ const Sidebar = ({ mapInstance }) => {
         'yellow',
         'grey'
     ]
+
 
     /**
      * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
@@ -92,15 +95,6 @@ const Sidebar = ({ mapInstance }) => {
         e.preventDefault();
     
         const formData = new FormData(e.target);
-
-        // Convert FormData to a plain object (for easier logging)
-        const dataObject = {};
-        formData.forEach((value, key) => {
-            dataObject[key] = value;
-        });
-
-        console.log('Submitting form data:');
-        console.log(dataObject); // Log the form data
 
         try {
             // Send the FormData object to the API
@@ -181,10 +175,9 @@ const Sidebar = ({ mapInstance }) => {
             <Hamburger onClickFunc={toggleSidebar} className={isSidebarOpen ? 'open' : '' }/>
 
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
-
+            <h2 className='sidebar-title'>User Input Parameters</h2>
                 <form className="sidebar-content" onSubmit={submitForm}>
-                    <h2 className='sidebar-title'>User Input Parameters</h2>
-
+                    
                     {/* Available vehicles section */}
                     <div className='sidebar-section'>
                         <h3 className='sidebar-section-header'>Available Vehicles</h3>
@@ -279,6 +272,28 @@ const Sidebar = ({ mapInstance }) => {
                         </div>
                     </div>
                     
+                    {/* ChatGPT config section */}
+                    <div className='sidebar-section'>
+                        <h3 className='sidebar-section-header'>OpenAI Configuration</h3>
+                        <p className='sidebar-subdesc'>
+                            This application uses <a href='https://openai.com'>OpenAI's</a> ChatGPT model for generating contextual mission plans and requires an 
+                            OpenAI API key. This application is not sponsored by or in direct cooperation with OpenAI. Your API key is not stored on the server and is discarded after use.
+                            If you do not supply an API key, then the application will still generate a mission plan but will lack an AI generated summary of the recommendations.
+                        </p>
+                   
+                        <div className='input-row'>
+                            <input name='openai-api-key' id='openai-api-key-input' placeholder='<your-openai-api-key>'></input>
+                        </div>
+
+                        <div className='input-row'>
+                            <select name='openai-model' id='openai-model-input'>
+                                <option name='select-model'>Select a model</option>
+                                <option name='gpt-4' value='gpt-4'>GPT-4</option>
+                                <option name='gpt-3.5-turbo' value='gpt-3.5-turbo'>GPT-3.5-Turbo</option>
+                            </select>
+                        </div>
+                    </div>
+
                     {/* Submit button */}
                     <button type='submit'>Generate</button>
                 </form>

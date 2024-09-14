@@ -118,6 +118,7 @@ def submit_form():
 
 @app.route('/get-input-params', methods=['GET'])
 def get_input_params():
+
     data: dict = {
         'vehicles': [
             {
@@ -152,17 +153,10 @@ def get_input_params():
         ]
     }
 
-    return jsonify({'data': data})
+    return jsonify({
+        'data': data,
+    })
 
-
-@app.route('/get-paths', methods=['GET'])
-def get_paths(): 
-    args = request.args
-    print('args')
-    print(args)
-
-
-    return jsonify({'paths': create_triangular_paths()})
 
 # ---- Run forever ---- $
 if __name__ == '__main__':
