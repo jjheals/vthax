@@ -1,42 +1,61 @@
 import pandas as pd
 import numpy as np
 import json
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 
-# Define terrain data
-static_path_data = {
-    "Path 1": {"Urban": 1, "Water": 2},
-    "Path 2": {"Urban": 1, "Water": 2},
-    "Path 3": {"Urban": 2, "Flatlands": 1},
-    "Path 4": {"Urban": 1, "Flatlands": 1},
-    "Path 5": {"Urban": 2, "Water": 1}
-}
+# Load terrain data
+with open('tmp.json', 'r') as f:
+    data = json.load(f)
 
-# Create DataFrame
+# Extract and reformat the terrain counts
+static_path_data = {}
+for path, details in data.items():
+    terrain_counts = details['terrain_counts']
+    
+    # Capitalize the first letter of each terrain type
+    formatted_terrain = {terrain.capitalize(): count for terrain, count in terrain_counts.items()}
+    
+    static_path_data[path] = formatted_terrain
+
+# Create DataFrame for terrain data
 terrain_df = pd.DataFrame(static_path_data).T.fillna(0)
 
-# Define cost matrix
+# Load cost matrix
 with open('costs.json', 'r') as file:
     costs = json.load(file)
-    costs_matrix = pd.DataFrame(costs.values(), index=costs.keys())
 
-# Convert all values in costs_matrix to numeric, replacing errors with NaN
-costs_matrix = costs_matrix.apply(pd.to_numeric, errors='coerce')
+# Convert all values in costs_matrix to numeric, replacing 'inf' with np.inf
+costs_matrix = pd.DataFrame(costs).applymap(lambda x: np.inf if x == "inf" else pd.to_numeric(x, errors='coerce'))
+
+# Transpose the costs_matrix if needed to align terrain types with index
+if set(costs_matrix.columns).intersection(terrain_df.columns):
+    costs_matrix = costs_matrix.T
+
+# Check alignment between terrain types
+common_terrains = terrain_df.columns.intersection(costs_matrix.index)
+
+# Subset both DataFrames to the common terrain types
+terrain_df = terrain_df[common_terrains]
+costs_matrix = costs_matrix.loc[common_terrains]
 
 # Function to calculate cost for a given path
 def calculate_path_costs(terrain_counts, vehicle, costs_matrix):
     total_cost = 0
     for terrain, count in terrain_counts.items():
+
+        print('terrain:', terrain)
+        print('count:', count)
+        
         if count > 0:
             if terrain in costs_matrix.index:
                 cost = costs_matrix.at[terrain, vehicle]
                 if pd.notna(cost):
                     total_cost += cost * count
                 else:
-                    total_cost += float('inf')  
-    return total_cost if total_cost != float('inf') else np.nan
+                    total_cost += np.inf  # Impossible route, so set to infinity
+    return total_cost if total_cost != np.inf else np.nan
 
 # Calculate costs
 vehicles = ['Helicopter', 'Boat', 'Car', 'Foot']
@@ -48,25 +67,20 @@ cost_df = pd.DataFrame({
     for vehicle in vehicles
 }, index=terrain_df.index)
 
-print("Cost DataFrame:")
-print(cost_df)
+# Replace NaNs (which represent infinite costs) with a large value (e.g., 1000)
+cost_df.replace(np.nan, 1000, inplace=True)
 
 # Combine terrain data and cost data into a single DataFrame
 df_paths = terrain_df.join(cost_df)
 
-print("\nCombined DataFrame:")
+# Print the cleaned DataFrame
+print("Cleaned DataFrame:")
 print(df_paths)
 
-# Replace NaNs with zero for machine learning model
+# Replace NaNs with zero for machine learning model (you can also leave them as they are if that's part of your logic)
 df_paths.fillna(0, inplace=True)
 
-# Print cleaned DataFrame
-print("After cleaning:")
-print(df_paths.describe())
-print(df_paths.head())
-
 # Create a dummy label column for the sake of this example
-# Replace with your actual label column or target variable
 df_paths['label'] = np.random.choice([0, 1], size=len(df_paths))  # Example label
 
 # Split data into features and labels
