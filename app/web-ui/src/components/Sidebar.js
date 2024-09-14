@@ -157,13 +157,13 @@ const Sidebar = () => {
                         <h3 className='sidebar-section-header'>Location Information</h3>
                         <div className='input-row'>
                             <label>Starting Location</label>
-                            <input type='number' className='loc-input' id='start-lat-input' name='start-lat' placeholder='lat'></input>
-                            <input type='number' className='loc-input' id='start-long-input' name='start-long' placeholder='lon'></input>
+                            <input type='text' className='loc-input' id='start-lat-input' name='start-lat' placeholder='lat'></input>
+                            <input type='text' className='loc-input' id='start-long-input' name='start-long' placeholder='lon'></input>
                         </div>
                         <div className='input-row'>
                             <label>Objective Location</label>
-                            <input type='number' className='loc-input' id='end-lat-input' name='end-lat'  placeholder='lat'></input>
-                            <input type='number' className='loc-input' id='end-long-input' name='end-lon' placeholder='lon'></input>
+                            <input type='text' className='loc-input' id='end-lat-input' name='end-lat'  placeholder='lat'></input>
+                            <input type='text' className='loc-input' id='end-long-input' name='end-lon' placeholder='lon'></input>
                         </div>
                     </div>
 
