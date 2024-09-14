@@ -24,7 +24,24 @@ terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/t
 
 # ---- PROCESSING ---- #
 def process_form_data(data):
-    print("Form Data Received:", data)
+    def get_vehicles():
+        vehicle_map = {
+            'ft': 'Foot',
+            'lv': 'Car',
+            'hc': 'Helicopter',
+            'bt': 'Boat'
+        }
+
+        selected_vehicles = ['Foot']
+
+        for key, vehicle in vehicle_map.items():
+            if key != 'ft' and data.get(key) == 'on':
+                selected_vehicles.append(vehicle)
+
+        return selected_vehicles
+    
+    vehicles = get_vehicles()
+    print("Form Data Received:", data, '\n', vehicles)
     get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
     return {'status': 'success', 'message': 'Form submitted successfully'}
 
