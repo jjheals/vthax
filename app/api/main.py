@@ -53,7 +53,22 @@ def process_form_data(data):
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
     form_data = request.form
+
+    # Process the data and get the traingulated paths
     result = process_form_data(dict(form_data))
+
+    get_elevation(form_data['start-lat'], form_data['start-long'], form_data['end-lat'], form_data['end-lon'])
+
+    paths = create_triangular_paths(
+        (float(data['start-lat']), float(data['start-long'])),
+        (float(data['end-lat']), float(data['end-lon'])),
+        5, 
+        4,
+        0.6
+    )
+
+
+
     return jsonify(result)
 
 
