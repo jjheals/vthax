@@ -12,6 +12,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from collections import Counter
 from country import get_country_from_coords
+import datetime as dt 
 
 
 # ---- Init flask ---- #
@@ -99,39 +100,31 @@ def process_form_data(data):
     # Fetch terrain counts for each path
     terrain_count_with_paths = fetch_terrain_for_paths(paths)
 
-    # Write terrain counts to a file
-    with open('tmp.json', 'w+') as file:
-        json.dump(terrain_count_with_paths, file, indent=4)
+    # Get the terrains from the terrain counts
+    terrains:list[str] = []
+    for d in terrain_count_with_paths.values():
+        these_terrains:list[str] = d['terrain_counts'].keys()
+        terrains.extend(these_terrains)
+    
+    terrains = list(set(terrains))
+    
+    # Get the vehicles based on the inputs 
+    all_vehicle_ids:list[str] = vehicles_df['vehicle_id'].values
+    vehicles:list[str] = []
+    for vid in all_vehicle_ids: 
+        if vid in data: 
+            vehicles.append(vehicles_df.loc[vehicles_df['vehicle_id'] == vid]['vehicle_name'].values[0])
 
     # -- Generate an AI response -- #
     api_key:str = data.get('openai-api-key', '')
     model_name:str = data.get('openai-model', '')
 
-    print('api_key:', api_key)
-    print('model_name:', model_name)
-
+    # If given an API key and model name, generate an AI response
     if api_key and model_name: 
-
-        # Get the terrains from the terrain counts
-        terrains:list[str] = []
-        for d in terrain_count_with_paths.values():
-            these_terrains:list[str] = d['terrain_counts'].keys()
-            terrains.extend(these_terrains)
-        
-        terrains = list(set(terrains))
-
-        # Get the vehicles based on the inputs 
-        all_vehicle_ids:list[str] = vehicles_df['vehicle_id'].values
-        vehicles:list[str] = []
-        for vid in all_vehicle_ids: 
-            if vid in data: 
-                vehicles.append(vehicles_df.loc[vehicles_df['vehicle_id'] == vid]['vehicle_name'].values[0])
-
-        with open('vehicles.json', 'w+') as file:
-            json.dump(vehicles, file, indent=4)
 
         # Create a dict with the input params to construct the prompt for the model
         model_prompt_inputs:dict = {
+            'vehicles': vehicles,
             'start-location': (data['start-lat'], data['start-lon']),
             'start-country': get_country_from_coords(data['start-lat'], data['start-lon']),
             'target-location': (data['end-lat'], data['end-lon']),
@@ -142,22 +135,18 @@ def process_form_data(data):
             'expected-resistance': data['resistance'],
             'strategy': data['strategy'], 
             'strategy-description': strategies_df.loc[strategies_df['strategy_name'] == data['strategy']]['strategy_description'].values[0],
-            'primary-objective': data['objective']
+            'primary-objective': data['objective'],
+            'additional-context': data['context']
         }
 
-        with open('model_params.json', 'w+') as file:
-            json.dump(model_prompt_inputs, file, indent=4)
-
+        # Use the OpenAI API to get a response from chatgpt
         response:str = get_chatgpt_response(
             format_prompt(model_prompt_inputs),
             data['openai-api-key'],
             data['openai-model']
         )
     else: 
-
         response:str = "[Not given OpenAI API key or model name]"
-
-    print('Done processing')
 
     # Return the result with paths and terrain counts
     return {
@@ -171,9 +160,13 @@ def process_form_data(data):
 # ---- ENDPOINTS ---- #
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
-    print('\033[92mForm submission.\033[0m')
-    form_data = request.form
-    result = process_form_data(dict(form_data))
+    print(f'\n\033[0m[{dt.datetime.now().strftime("%H:%M:%S")}] \033[92mForm submission.\033[0m')
+
+    # Get the form data from the request and process it
+    result = process_form_data(dict(request.form))
+
+    # Info print
+    print(f'\033[0m[{dt.datetime.now().strftime("%H:%M:%S")}] \033[92mDone. Returning.\033[0m\n')
 
     return jsonify(result)
 
@@ -216,15 +209,6 @@ def get_input_params():
 
     return jsonify({'data': data})
 
-
-@app.route('/get-paths', methods=['GET'])
-def get_paths(): 
-    args = request.args
-    print('args')
-    print(args)
-
-
-    return jsonify({'paths': create_triangular_paths()})
 
 # ---- Run forever ---- $
 if __name__ == '__main__':
