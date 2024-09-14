@@ -34,7 +34,7 @@ def process_form_data(data):
     print("Form Data Received:", data)
 
     # Get elevation data
-    get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
+    # get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
 
     # Create paths with triangular deviations
     paths = create_triangular_paths(
