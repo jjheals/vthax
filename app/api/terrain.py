@@ -85,55 +85,6 @@ def count_terrain_categories(terrain_info):
     # Convert terrain counts to a list of dictionaries
     return [{"terrain": terrain, "count": count} for terrain, count in terrain_counts.items()]
 
-
-# def get_elevation(start_lat, start_lon, end_lat, end_lon):
-#     if not all([start_lat, start_lon, end_lat, end_lon]):
-#         return []
-
-#     try:
-#         start_lat = float(start_lat)
-#         start_lon = float(start_lon)
-#         end_lat = float(end_lat)
-#         end_lon = float(end_lon)
-#     except ValueError:
-#         return []
-
-#     distance_km = round(calculate_distance(start_lat, start_lon, end_lat, end_lon))
-
-#     # Calculate number of intermediate points
-#     num_points = max(1, distance_km // 50)  # Ensure at least 1 point
-#     points = generate_intermediate_points(start_lat, start_lon, end_lat, end_lon, num_points)
-
-#     # Fetch terrain data for each intermediate point
-#     terrain_info = [fetch_terrain(lat, lon) for lat, lon in points]
-
-#     # Fetch terrain data for start and end points
-#     start_terrain = fetch_terrain(start_lat, start_lon)
-#     end_terrain = fetch_terrain(end_lat, end_lon)
-
-#     # Count occurrences of each terrain category in intermediate terrain info
-#     terrain_counts = count_terrain_categories(terrain_info)
-
-#     route_info = {
-#         "distance_km": distance_km,
-#         "intermediate_terrain_info": [
-#             {"lat": lat, "lon": lon, "terrain": terrain}
-#             for (lat, lon), terrain in zip(points, terrain_info)
-#         ] + [  # Add terrain counts to the end of the intermediate_terrain_info array
-#             {"terrain_counts": terrain_counts}
-#         ],
-#         "route": [
-#             {"lat": start_lat, "lon": start_lon, "terrain": start_terrain},
-#             {"lat": end_lat, "lon": end_lon, "terrain": end_terrain}
-#         ]
-#     }
-    
-#     with open('route-info.json', 'w+') as file:
-#         json.dump(route_info, file, indent=4)
-
-#     return {'status': 200, 'data': route_info}
-
-
 import random
 
 
