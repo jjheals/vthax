@@ -3,7 +3,6 @@ from collections import Counter
 from geopy.distance import geodesic
 import numpy as np
 import json 
-import random 
 
 
 
@@ -24,7 +23,7 @@ def generate_intermediate_points(start_lat, start_lon, end_lat, end_lon, num_poi
 def fetch_terrain(lat, lon):
     """Fetch land use data from OpenStreetMap."""
     try:
-        radius = 80  # Radius in meters for precision
+        radius = 100  # Radius in meters for precision
         url = f"https://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node(around:{radius},{lat},{lon});way(around:{radius},{lat},{lon});relation(around:{radius},{lat},{lon}););out body;>;out skel qt;"
         response = requests.get(url)
         response.raise_for_status()
@@ -85,8 +84,6 @@ def count_terrain_categories(terrain_info):
     # Convert terrain counts to a list of dictionaries
     return [{"terrain": terrain, "count": count} for terrain, count in terrain_counts.items()]
 
-import random
-
 
 def interpolate_point(p1:tuple[float, float], p2:tuple[float, float], t:float) -> tuple[float, float]:
     """
@@ -140,11 +137,11 @@ def create_triangular_paths(start:tuple[float, float], end:tuple[float, float], 
     Creates multiple paths with triangular deviations between a start and endpoint.
     
     Args:
-        start (tuple[float, float]): starting point (lat, lon).
-        end (tuple[float, float]): ending point (lat, lon).
-        num_paths (int): number of paths to generate.
-        levels (int): number of recursion levels (controls the granularity of deviation).
-        factor (float): deviation factor.
+        start (tuple[float, float]): Starting point (lat, lon).
+        end (tuple[float, float]): Ending point (lat, lon).
+        num_paths (int): Number of paths to generate.
+        levels (int): Number of recursion levels (controls the granularity of deviation).
+        factor (float): Deviation factor.
         
     Returns:
         list[list[tuple[float, float]]]: List of paths, where each path is a list of points.
