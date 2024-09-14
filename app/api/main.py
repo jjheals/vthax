@@ -5,6 +5,8 @@ from flask_cors import CORS
 import pandas as pd
 import numpy as np
 from terrain import get_elevation
+from utils import df_to_graph
+
 
 # ---- Init flask ---- #
 app = Flask(__name__)
@@ -14,13 +16,13 @@ compress.init_app(app)
 # Init CORS with the URL of the React app
 CORS(app, origins=['http://localhost:3000'])
 
+
 # ---- Init backend ---- #
 # Load the data, graph, etc.
 vehicles_df: pd.DataFrame = pd.read_csv('../../data/static/vehicle-definitions.csv')
 terrain_df: pd.DataFrame = pd.read_csv('../../data/static/terrain-definitions.csv')
-# Assuming you have a function df_to_graph in utils.py
-from utils import df_to_graph
 terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/terrain-vehicle-matrix.csv'))
+
 
 # ---- PROCESSING ---- #
 def process_form_data(data):
@@ -44,6 +46,7 @@ def process_form_data(data):
     print("Form Data Received:", data, '\n', vehicles)
     get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
     return {'status': 'success', 'message': 'Form submitted successfully'}
+
 
 # ---- ENDPOINTS ---- #
 @app.route('/submit-form', methods=['POST'])
