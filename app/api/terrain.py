@@ -24,7 +24,7 @@ def generate_intermediate_points(start_lat, start_lon, end_lat, end_lon, num_poi
 def fetch_terrain(lat, lon):
     """Fetch land use data from OpenStreetMap."""
     try:
-        radius = 500  # Radius in meters for precision
+        radius = 80  # Radius in meters for precision
         url = f"https://overpass-api.de/api/interpreter?data=[out:json][timeout:25];(node(around:{radius},{lat},{lon});way(around:{radius},{lat},{lon});relation(around:{radius},{lat},{lon}););out body;>;out skel qt;"
         response = requests.get(url)
         response.raise_for_status()
