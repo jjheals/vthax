@@ -4,7 +4,7 @@ from flask_compress import Compress
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from terrain import get_elevation, create_triangular_paths, fetch_terrain
+from terrain import create_triangular_paths, fetch_terrain
 from utils import df_to_graph
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -32,9 +32,6 @@ terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/t
 def process_form_data(data):
     print ('BREAK THIS IS A BREAK')
     print("Form Data Received:", data)
-
-    # Get elevation data
-    # get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
 
     # Create paths with triangular deviations
     paths = create_triangular_paths(
