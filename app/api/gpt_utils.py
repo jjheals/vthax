@@ -11,16 +11,36 @@ def format_prompt(inputs: dict) -> str:
         which is about {} km from my starting location. I expect the following terrains: {}.
         I have {} total personnel. Based on previously acquired intelligence, my target time 
         on objective is {} hours, and I expect {} resistance once on target. I want to conduct 
-        a {} mission, specifically {}. My primary objective is to {}.
+        a {} mission, specifically {}. My primary objective is to {}. {}
         Create a detailed plan for me to conduct an operation under these circumstances. Give 
         me the response in a pretty HTML format that I can display on a webpage. Put headers 
         in <h1> tags, and any body content in <p> tags. Just give me the content of your 
         recommendation, no disclaimers or anything extra. I want as much detail as possible, 
         especailly around the execution of the operation. I do not need you to re-summarize the 
-        parameters I just told you.
+        parameters I just told you. Aim for about 500-600 words.
     """.strip()
 
-    return prompt_template.format(
+    print('VEHICLES')
+    print(inputs.get('vehicles'))
+
+    prompt_template2 = """
+        Create a detailed operations plan for a military operation within the following parameters:
+        I have the following available vehicles: {}. If a vehicle is not listed, assume I do not 
+        have it. My starting location is at lat: {}, long: {}, in {}. My target is at lat: {}, 
+        long: {}, which is about {} km from my starting location. I expect the following terrains: {}. 
+        Use common sense when advising about vehicles and terrains. I have {} total personnel. Based 
+        on previously acquired intelligence, my target time on objective is no more than {} hours, and 
+        I expect {} resistance once on target. I want to conduct a {} mission, specifically {}. My 
+        primary objective is to {}. {}
+        Give me your plan in a pretty HTML format that I can display on a webpage. Put headers 
+        in <h1> tags, and any body content in <p> tags. Just give me the content of your 
+        recommendation, no disclaimers or anything extra. I do not need you to re-summarize the 
+        parameters I just told you and want you to focus on detailing the specifics of successful execution.
+    """.strip()
+
+    additional_context:str = inputs.get('additional-context', '')
+
+    return prompt_template2.format(
         ', '.join(inputs.get('vehicles', [])),        # Available vehicles
         inputs['start-location'][0],               # Starting lat
         inputs['start-location'][1],               # Starting lon
@@ -34,7 +54,8 @@ def format_prompt(inputs: dict) -> str:
         inputs.get('expected-resistance', 'unknown'), # Expected resistance
         inputs.get('strategy', 'unknown'),            # Strategy
         inputs.get('strategy-description', ''),       # Strategy description (e.g., "get on target without being seen", etc.)
-        inputs.get('primary-objective', 'unknown')    # Primary objective
+        inputs.get('primary-objective', 'unknown'),   # Primary objective
+        f'Here is some additional context about the mission that may be helpful in your analysis: {additional_context}' if additional_context else ''
     )
 
 

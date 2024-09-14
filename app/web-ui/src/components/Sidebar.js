@@ -23,6 +23,7 @@ const Sidebar = ({ mapInstance }) => {
     const [objectiveParams, setObjectiveParams] = useState([]);
     const [possiblePaths, setPossiblePaths] = useState([]);
     const [pathLayers, setPathLayers] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const colors = [
         'red',
@@ -133,6 +134,9 @@ const Sidebar = ({ mapInstance }) => {
      */
     const submitForm = async (e) => { 
         e.preventDefault();
+
+        // Now loading
+        setLoading(true);
         
         // Clear old markers from the map
         mapInstance.eachLayer((layer) => {
@@ -176,6 +180,8 @@ const Sidebar = ({ mapInstance }) => {
 
         } catch (error) {
             console.error('Error:', error);
+        } finally { 
+            setLoading(false);
         }
     }
 
@@ -233,6 +239,9 @@ const Sidebar = ({ mapInstance }) => {
     return (
         <div className='sidebar-container'>
             <Hamburger onClickFunc={toggleSidebar} className={isSidebarOpen ? 'open' : '' }/>
+
+            {/* Spinner */}
+            {loading && <div className="spinner"></div>}
 
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
             <h2 className='sidebar-title'>User Input Parameters</h2>
@@ -330,6 +339,9 @@ const Sidebar = ({ mapInstance }) => {
                                 <option name='high' key='high' value='high'>High</option>
                             </select>
                         </div>
+
+                        <div className='input-row'><label>Additional Information/Context</label></div>
+                        <div><input type='text' name='context' id='context-input' placeholder='Example: The target objective is a landlocked, well-fortified position ...'></input></div>
                     </div>
                     
                     {/* ChatGPT config section */}
