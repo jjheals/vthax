@@ -4,7 +4,7 @@ from flask_compress import Compress
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
-from terrain import get_elevation, create_random_paths
+from terrain import get_elevation, create_triangular_paths
 from utils import df_to_graph
 
 # ---- Init flask ---- #
@@ -30,11 +30,12 @@ def process_form_data(data):
 
     get_elevation(data['start-lat'], data['start-long'], data['end-lat'], data['end-lon'])
 
-    paths = create_random_paths(
+    paths = create_triangular_paths(
         (float(data['start-lat']), float(data['start-long'])),
         (float(data['end-lat']), float(data['end-lon'])),
         5, 
-        5
+        4,
+        0.4
     )
 
     print('created paths')
@@ -96,7 +97,7 @@ def get_paths():
     print(args)
 
 
-    return jsonify({'paths': create_random_paths()})
+    return jsonify({'paths': create_triangular_paths()})
 
 # ---- Run forever ---- $
 if __name__ == '__main__':

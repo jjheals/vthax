@@ -3,6 +3,7 @@ from collections import Counter
 from geopy.distance import geodesic
 import numpy as np
 import json 
+import random 
 
 
 
@@ -134,58 +135,74 @@ def get_elevation(start_lat, start_lon, end_lat, end_lon):
 
 
 import random
-from geopy.distance import great_circle
 
-def generate_random_waypoints(start:tuple[float, float], end:tuple[float, float], num_waypoints:int) -> list[tuple[int,int]]:
+
+def interpolate_point(p1:tuple[float, float], p2:tuple[float, float], t:float) -> tuple[float, float]:
     """
-    Generates random waypoints between a start and endpoint.
+    Linearly interpolate between two points p1 and p2 by factor t.
     
-    Args: 
-        start (tuple[float, float]): starting latitude and longitude.
-        end (tuple[float, float]): ending latitude and longitude.
-        num_waypoints (int) number of random waypoints to generate.
-    
-    Returns 
-        list[tuple[float, float]]: list of tuples containing the waypoints.
+    Args:
+        p1 (tuple[float, float]): first point (lat, lon).
+        p2 (tuple[float, float]): second point (lat, lon).
+        t (float): factor to interpolate.
+        
+    Returns:
+        tuple[float, float]: interpolated point (lat, lon).
     """
-    waypoints:list[tuple[float, float]] = [start]
-    
-    # Generate random waypoints
-    for _ in range(num_waypoints):
-        # Randomly choose a fraction between 0 and 1 
-        fraction = random.uniform(0, 1)
-
-        # Add the fraction to the lat/long of the start and end to generate a random point between the two
-        lat:float = start[0] + fraction * (end[0] - start[0])
-        lon:float = start[1] + fraction * (end[1] - start[1])
-        waypoints.append((lat, lon))
-    
-    # Add the end location to the waypoints so we end in the right place 
-    waypoints.append(end)
-
-    # Return the populated list 
-    return waypoints
+    return (p1[0] * (1 - t) + p2[0] * t, p1[1] * (1 - t) + p2[1] * t)
 
 
-def create_random_paths(start:tuple[float, float], end:tuple[float, float], num_waypoints:int, num_paths:int) -> list[list[tuple[float, float]]]:
+def add_random_triangle_deviation(start:tuple[float, float], end:tuple[float, float], level:int, factor:float) -> list[tuple[float, float]]:
     """
-    Creates multiple random paths between a start and endpoint.
+    Recursively adds random triangle deviations to the path between start and end.
     
-    Args: 
-        start (tuple[float, float]): starting latitude and longitude.
-        end (tuple[float, float]): ending latitude and longitude.
-        num_waypoints (int): number of random waypoints to generate.
-        num_paths (int): number of paths to generate
-
-    Returns: 
-        list[list[tuple[float, float]]]: list of lists containing paths, where each path is a list of tuples (lat, lon).
+    Args:
+        start (tuple[float, float]): Starting point (lat, lon).
+        end (tuple[float, float]): Ending point (lat, lon).
+        level (int): Current recursion level.
+        factor (float): Deviation factor, controls the magnitude of deviation.
+        
+    Returns:
+        list[tuple[float, float]]: List of points including deviations.
     """
-    # Init empty list of paths
+    if level == 0:
+        return [start, end]
+    
+    mid_point = interpolate_point(start, end, 0.5)
+    
+    # Deviation triangle vertex
+    angle = np.random.uniform(0, 2 * np.pi)
+    distance = factor / (2 ** level)  # Deviation decreases with depth
+    dx = distance * np.cos(angle)
+    dy = distance * np.sin(angle)
+    deviation_point = (mid_point[0] + dx, mid_point[1] + dy)
+    
+    # Recursively generate paths
+    first_half = add_random_triangle_deviation(start, deviation_point, level - 1, factor)
+    second_half = add_random_triangle_deviation(deviation_point, end, level - 1, factor)
+    
+    return first_half + second_half[1:]  # Avoid duplicating the midpoint
+
+
+def create_triangular_paths(start:tuple[float, float], end:tuple[float, float], num_paths:int, levels:int, factor:float) -> list[tuple[float, float]]:
+    """
+    Creates multiple paths with triangular deviations between a start and endpoint.
+    
+    Args:
+        start (tuple[float, float]): Starting point (lat, lon).
+        end (tuple[float, float]): Ending point (lat, lon).
+        num_paths (int): Number of paths to generate.
+        levels (int): Number of recursion levels (controls the granularity of deviation).
+        factor (float): Deviation factor.
+        
+    Returns:
+        list[list[tuple[float, float]]]: List of paths, where each path is a list of points.
+    """
     paths = []
     
-    # Generate num_paths possible paths 
     for _ in range(num_paths):
-        waypoints = generate_random_waypoints(start, end, num_waypoints)
-        paths.append(waypoints)
+        path = add_random_triangle_deviation(start, end, levels, factor)
+        paths.append(path)
     
     return paths
+
