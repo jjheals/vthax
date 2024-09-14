@@ -10,7 +10,7 @@ const Homepage = () => {
             <div className='header-bar'></div>
 
             <Sidebar />
-            <Map data={{}}/>
+            <Map data={[{'latitude': 0, 'longitude': 0}]}/>
         </div>
     );
 }
