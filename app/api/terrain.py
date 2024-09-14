@@ -140,11 +140,11 @@ def create_triangular_paths(start:tuple[float, float], end:tuple[float, float], 
     Creates multiple paths with triangular deviations between a start and endpoint.
     
     Args:
-        start (tuple[float, float]): Starting point (lat, lon).
-        end (tuple[float, float]): Ending point (lat, lon).
-        num_paths (int): Number of paths to generate.
-        levels (int): Number of recursion levels (controls the granularity of deviation).
-        factor (float): Deviation factor.
+        start (tuple[float, float]): starting point (lat, lon).
+        end (tuple[float, float]): ending point (lat, lon).
+        num_paths (int): number of paths to generate.
+        levels (int): number of recursion levels (controls the granularity of deviation).
+        factor (float): deviation factor.
         
     Returns:
         list[list[tuple[float, float]]]: List of paths, where each path is a list of points.

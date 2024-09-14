@@ -7,3 +7,5 @@ geopy
 requests
 numpy
 pandas
+transformers
+torch
