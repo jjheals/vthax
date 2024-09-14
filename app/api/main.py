@@ -22,7 +22,19 @@ terrain_df: pd.DataFrame = pd.read_csv('../../data/static/terrain-definitions.cs
 from utils import df_to_graph
 terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/terrain-vehicle-matrix.csv'))
 
+# ---- PROCESSING ---- #
+def process_form_data(data):
+    print("Form Data Received:", data)
+    get_elevation(data[start-lat], data[start-long], data[end-lat], data[end])
+    return {'status': 'success', 'message': 'Form submitted successfully'}
+
 # ---- ENDPOINTS ---- #
+@app.route('/submit-form', methods=['POST'])
+def submit_form():
+    form_data = request.form
+    result = process_form_data(dict(form_data))
+    return jsonify(result)
+
 @app.route('/get-input-params', methods=['GET'])
 def get_input_params():
     data: dict = {
@@ -61,16 +73,9 @@ def get_input_params():
 
     return jsonify({'data': data})
 
-
-@app.route('/elevation', methods=['GET'])
-def get_elevation():
-    start_lat = request.args.get('start_lat')
-    start_lon = request.args.get('start_lon')
-    end_lat = request.args.get('end_lat')
-    end_lon = request.args.get('end_lon')
-
+def get_elevation(start_lat, start_lon, end_lat, end_lon):
     if not all([start_lat, start_lon, end_lat, end_lon]):
-        return jsonify({"error": "Missing required parameters"}), 400
+        return []
 
     try:
         start_lat = float(start_lat)
@@ -78,7 +83,7 @@ def get_elevation():
         end_lat = float(end_lat)
         end_lon = float(end_lon)
     except ValueError:
-        return jsonify({"error": "Invalid latitude or longitude format"}), 400
+        return []
 
     distance_km = round(calculate_distance(start_lat, start_lon, end_lat, end_lon))
 
@@ -110,7 +115,7 @@ def get_elevation():
         ]
     }
 
-    return jsonify({'status': 200, 'data': route_info})
+    return {'status': 200, 'data': route_info}
 
 # ---- Run forever ---- $
 if __name__ == '__main__':
