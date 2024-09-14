@@ -60,22 +60,23 @@ def process_form_data(data):
                 except Exception as e:
                     print(f"Error fetching terrain for ({lat}, {lon}): {e}")
 
+            # Fetch terrain for midpoints as well
             for i in range(len(path) - 1):
                 lat1, lon1 = path[i]
                 lat2, lon2 = path[i + 1]
-                
+
                 # Compute midpoint
                 mid_lat = (lat1 + lat2) / 2
                 mid_lon = (lon1 + lon2) / 2
-                
+
                 try:
                     terrain_info = fetch_terrain(mid_lat, mid_lon)
-                    for terrain_type in terrain_types:
+                    for terrain_type in terrain_info.split(', '):
                         if terrain_type != "Unknown":
                             terrain_counts[terrain_type] += 1
                 except Exception as e:
                     print(f"Error fetching terrain for midpoint ({mid_lat}, {mid_lon}): {e}")
-            
+
             return terrain_counts
 
         # Use ThreadPoolExecutor to process each path in parallel
@@ -83,28 +84,32 @@ def process_form_data(data):
             # Map paths to the terrain counting function
             terrain_counts_list = list(executor.map(fetch_terrain_for_single_path, paths))
 
-        # Convert terrain counts list into a dict format suitable for returning
-        result = [
-            {terrain: count for terrain, count in terrain_counts.items()}
-            for terrain_counts in terrain_counts_list
-        ]
+        # Convert to the required format
+        result = {
+            f'Path {i + 1}': {
+                'path': paths[i],
+                'terrain_counts': dict(terrain_counts_list[i])
+            }
+            for i in range(len(paths))
+        }
+
         return result
 
+
     # Fetch terrain counts for each path
-    terrain_count = fetch_terrain_for_paths(paths)
+    terrain_count_with_paths = fetch_terrain_for_paths(paths)
 
     # Write terrain counts to a file
     with open('tmp.json', 'w+') as file:
-        json.dump(terrain_count, file, indent=4)
+        json.dump(terrain_count_with_paths, file, indent=4)
 
-    print('Done')
+    print('Done processing')
 
     # Return the result with paths and terrain counts
     return {
         'status': 'success',
         'message': 'Form submitted successfully',
-        'paths': paths,
-        'terrain_counts': terrain_count  # Include terrain counts in the result
+        'paths': terrain_count_with_paths  # Include terrain counts in the result
     }
 
 
@@ -112,13 +117,19 @@ def process_form_data(data):
 @app.route('/submit-form', methods=['POST'])
 def submit_form():
     form_data = request.form
-    result = process_form_data(dict(form_data))
+    #result = process_form_data(dict(form_data))
+
+    with open('tmp.json', 'r') as file:
+        return jsonify({
+            'status': 'success',
+            'message': 'Form submitted successfully',
+            'paths': json.load(file)  # Include terrain counts in the result
+        })
     return jsonify(result)
 
 
 @app.route('/get-input-params', methods=['GET'])
 def get_input_params():
-
     data: dict = {
         'vehicles': [
             {
@@ -153,10 +164,17 @@ def get_input_params():
         ]
     }
 
-    return jsonify({
-        'data': data,
-    })
+    return jsonify({'data': data})
 
+
+@app.route('/get-paths', methods=['GET'])
+def get_paths(): 
+    args = request.args
+    print('args')
+    print(args)
+
+
+    return jsonify({'paths': create_triangular_paths()})
 
 # ---- Run forever ---- $
 if __name__ == '__main__':

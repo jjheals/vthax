@@ -5,6 +5,7 @@ import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
 import forge from 'node-forge';
+import { toTitleCase } from '../utils.js';
 
 import '../css/Sidebar.css'; 
 
@@ -34,6 +35,22 @@ const Sidebar = ({ mapInstance }) => {
     ]
 
 
+    // Function to determine class label based on terrain counts
+    function getClassLabels(terrainCounts) {
+        // Example logic for determining class label
+        // Customize this based on your classification criteria
+        let classes = [];
+        const numClassifications = Object.values(terrainCounts).reduce((accumulator, currentValue) => {
+            return accumulator + currentValue;
+        }, 0);
+
+        Object.entries(terrainCounts).forEach(([terrain, count]) => {
+            classes.push([toTitleCase(terrain), count / numClassifications])
+        })
+
+        return classes;
+    }
+
     /**
      * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
      * @returns { null }
@@ -49,27 +66,43 @@ const Sidebar = ({ mapInstance }) => {
      */
     function displayPathsOnMap(paths) { 
 
+        console.log('displaying paths', paths);
+
         // Clear previous path layers from the map
         pathLayers.forEach(layer => mapInstance.removeLayer(layer));
         
         // Create new path layers and store references
-        const newPathLayers = paths.map((pathCoordinates, index) => {
+        var i = 0;
+        const newPathLayers = Object.entries(paths).map(([pathName, pathInfo]) => {
+
+            const pathCoordinates = pathInfo.path;
+            const pathTerrainCounts = pathInfo.terrain_counts;
+
+            // Determine class label based on terrain counts
+            const terrainLabels = getClassLabels(pathTerrainCounts);
 
             // Create the path line
-            const path = L.polyline(pathCoordinates, { color: colors[index % colors.length] });
+            const path = L.polyline(pathCoordinates, { color: colors[i % colors.length] });
 
             // Add a popup that appears on hover of the line
             path.on('mouseover', (e) => {
                 const polyline = e.target;
-                const latlngs = polyline.getLatLngs();
-                const pathLength = latlngs.length > 1 
-                    ? `Length: ${(L.latLng(latlngs[0]).distanceTo(L.latLng(latlngs[latlngs.length - 1])).toFixed(2)) / 1000} km`
-                    : 'Single point';
     
-                polyline.bindTooltip(`<b>Path ${index + 1}</b><br>${pathLength}`, {
-                    permanent: false,
-                    direction: 'top'
-                }).openTooltip();
+                polyline.bindTooltip(
+                    `<div class="polyline-tooltip">
+                        <p class="polyline-title">${pathName}</b>
+                        <table class="polyline-table">
+                            <thead><th>Terrain</th><th>Percentage</th></thead>
+                            <tbody>
+                                ${terrainLabels.map(tup => `<tr><td>${tup[0]}</td><td>${tup[1] * 100}%</td></tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>`, 
+                    {
+                        permanent: false,
+                        direction: 'top'
+                    }
+                ).openTooltip();
             });
 
             // Close tooltip on mouseout
@@ -79,6 +112,8 @@ const Sidebar = ({ mapInstance }) => {
 
             // Add the path to the map
             path.addTo(mapInstance);
+            i+=1 
+
             return path;
         });
 

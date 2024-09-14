@@ -112,3 +112,24 @@
     font-size: 14px;
     width: 75px;
 }
+
+/* Tooltips for the polylines on the map */
+.polyline-tooltip { 
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+.polyline-title { 
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+
+}
+
+.polyline-table { 
+    display: table;
+    border-collapse: collapse;
+    text-align: left;
+    gap: 5px;
+}
