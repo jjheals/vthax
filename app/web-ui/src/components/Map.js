@@ -33,10 +33,10 @@ const Map = ({ onMapReady }) => {
         );
         
         // Add a default basemap tile layer 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             maxZoom: maxZoom,
             minZoom: minZoom,
-            attribution: '&copy; OpenStreetMap contributors',
+            attribution: '&copy; OpenStreetMap contributors &copy; CartoDB',
             noWrap: true
         }).addTo(map);
 
