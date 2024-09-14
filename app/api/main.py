@@ -23,7 +23,6 @@ compress.init_app(app)
 # Init CORS with the URL of the React app
 CORS(app, origins=['http://localhost:3000'])
 
-
 # ---- Init backend ---- #
 # Load the data, graph, etc.
 vehicles_df: pd.DataFrame = pd.read_csv('../../data/static/vehicle-definitions.csv')
