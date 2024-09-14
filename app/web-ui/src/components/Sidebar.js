@@ -66,8 +66,6 @@ const Sidebar = ({ mapInstance }) => {
      */
     function displayPathsOnMap(paths) { 
 
-        console.log('displaying paths', paths);
-
         // Clear previous path layers from the map
         pathLayers.forEach(layer => mapInstance.removeLayer(layer));
         
@@ -90,7 +88,10 @@ const Sidebar = ({ mapInstance }) => {
     
                 polyline.bindTooltip(
                     `<div class="polyline-tooltip">
-                        <p class="polyline-title">${pathName}</b>
+                        <div class="polyline-title-row">
+                            <div class="polyline-color-icon"></div>
+                            <p class="polyline-title">${pathName}</p>
+                        </div>
                         <table class="polyline-table">
                             <thead><th>Terrain</th><th>Percentage</th></thead>
                             <tbody>
