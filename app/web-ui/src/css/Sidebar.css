@@ -1,4 +1,9 @@
 /* Sidebar.css */
+input, option, select { 
+    font-family: 'Courier New', Courier, monospace;
+    padding: 3px;
+}
+
 .spinner {
     position: absolute;
     left: 50%;
@@ -50,6 +55,7 @@
 }
 
 .sidebar-content { 
+    font-family: monospace;
     overflow-y: scroll;
     padding-bottom: 3vh;
 }
@@ -107,18 +113,17 @@
 }
 
 .info-icon {
-    width: 15px; /* Adjust size as needed */
-    height: 15px; /* Adjust size as needed */
-    border-radius: 50%; /* Makes it circular */
-    background-color: grey; /* Background color for the circle */
+    width: 15px; 
+    height: 15px; 
+    border-radius: 50%;
+    background-color: grey;
     display: flex;
-    align-items: center; /* Center the text vertically */
-    justify-content: center; /* Center the text horizontally */
-    color: white; /* Text color */
-    font-size: 10px; /* Adjust text size */
-    font-weight: bold; /* Make text bold */
+    align-items: center; 
+    justify-content: center; 
+    color: white; 
+    font-size: 10px;
     text-align: center;
-    border: 1px solid black; /* Optional: Border around the circle */
+    border: 1px solid black;
     margin-left: 5px;
     margin-bottom: 10px;
 }
@@ -206,15 +211,18 @@
     border-radius: 5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     font-size: 14px;
+    font-family: 'Courier New', Courier, monospace;
     color: #333;
 }
 
 .ai-response-box h1, .ai-response-box p, .ai-response-box h2 { 
+    font-family: 'Courier New', Courier, monospace;
     margin-top: 0;
     margin-bottom: 0;
 }
 
 .ai-response-box h1 { 
+    font-family: 'Courier New', Courier, monospace;
     margin-top: 10px;
     font-size: 18px;
 }
@@ -222,7 +230,7 @@
 .ai-response-box h2 { 
     font-size: 13px;
     margin-top: 7px;
-    font-family: monospace;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .ai-response-box p { 
@@ -230,6 +238,7 @@
 }
 
 .subtitle { 
+    font-family: 'Courier New', Courier, monospace;
     border-bottom: 1px solid darkblue;
     font-size: 20px;
     color: darkblue;
