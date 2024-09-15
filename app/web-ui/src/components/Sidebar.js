@@ -35,8 +35,15 @@ const Sidebar = ({ mapInstance }) => {
         'grey'
     ]
 
+    // Define the API base URL for transitions between dev/prod
+    const apiBaseUrl = 'http://127.0.0.1:8000/api'
 
-    // Function to determine class label based on terrain counts
+
+    /**
+     * @function getClassLabels creates class labels and percentages from the given terrain counts
+     * @param { Array<Object> } terrainCounts 
+     * @returns { Array<Array<String, Number>>} list of tuples containing the terrain (Title Case) and % it appears
+     */
     function getClassLabels(terrainCounts) {
         // Example logic for determining class label
         // Customize this based on your classification criteria
@@ -51,6 +58,7 @@ const Sidebar = ({ mapInstance }) => {
 
         return classes;
     }
+
 
     /**
      * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
@@ -145,11 +153,12 @@ const Sidebar = ({ mapInstance }) => {
             }
         });
 
+        // Create a FormData obj with the data from the form
         const formData = new FormData(e.target);
 
         try {
             // Send the FormData object to the API
-            const response = await fetch('http://localhost:8000/submit-form', {
+            const response = await fetch(`${apiBaseUrl}/submit-form`, {
                 method: 'POST',
                 body: formData,
             });
@@ -163,7 +172,7 @@ const Sidebar = ({ mapInstance }) => {
             const responseData = await response.json();
             setPossiblePaths(responseData.paths);
             
-            // Example coordinates where you want to place the text box
+            // Define coords to place the text box (aligns top left)
             const lat = 51.505;
             const lng = -0.09;
 
@@ -176,10 +185,14 @@ const Sidebar = ({ mapInstance }) => {
             // Create a marker using the custom divIcon
             const marker = L.marker([lat, lng], { icon: textBoxIcon }).addTo(mapInstance);
             
+            // Disable scroll now that the text box is there that allows scroll inside 
             mapInstance.scrollWheelZoom.disable();
 
+        // Handle erros
         } catch (error) {
             console.error('Error:', error);
+
+        // No longer loading
         } finally { 
             setLoading(false);
         }
@@ -192,7 +205,7 @@ const Sidebar = ({ mapInstance }) => {
      */
     async function getInputParamsData() { 
         // Get the data from the API 
-        const response = await fetch('http://localhost:8000/get-input-params', options);
+        const response = await fetch(`${apiBaseUrl}/get-input-params`, options);
         const responseJson = await response.json();
         return responseJson;
     }

@@ -151,21 +151,21 @@ def process_form_data(data):
     else: 
         response:str = "[Not given OpenAI API key or model name]"
 
-
+    # Get the top five paths to return to the client
     top_five_paths = get_top_5_combinations(terrain_count_with_paths, cost_matrix_json, vehicles)
-    print("The top five paths are as follows: ", top_five_paths)
 
     # Return the result with paths and terrain counts
     return {
         'status': 'success',
         'message': 'Form submitted successfully',
         'paths': terrain_count_with_paths,
-        'ai_response': response  
+        'ai_response': response,
+        'top-paths': top_five_paths
     }
 
 
 # ---- ENDPOINTS ---- #
-@app.route('/submit-form', methods=['POST'])
+@app.route('/api/submit-form', methods=['POST'])
 def submit_form():
     print(f'\n\033[0m[{dt.datetime.now().strftime("%H:%M:%S")}] \033[92mForm submission.\033[0m')
 
@@ -178,7 +178,7 @@ def submit_form():
     return jsonify(result)
 
 
-@app.route('/get-input-params', methods=['GET'])
+@app.route('/api/get-input-params', methods=['GET'])
 def get_input_params():
     data: dict = {
         'vehicles': [
