@@ -1,0 +1,38 @@
+{
+    "Water": {
+        "Helicopter": 1,
+        "Boat": 1,
+        "Land Vehicle": "inf",
+        "Foot": "inf"
+    },
+    "Forest": {
+        "Helicopter": 2,
+        "Boat": "inf",
+        "Land Vehicle": "inf",
+        "Foot": 7
+    },
+    "Flatlands": {
+        "Helicopter": 1,
+        "Boat": "inf",
+        "Land Vehicle": 5,
+        "Foot": 4
+    },
+    "Urban": {
+        "Helicopter": 1,
+        "Boat": "inf",
+        "Land Vehicle": 4,
+        "Foot": 3
+    },
+    "Transport": {
+        "Helicopter": 1,
+        "Boat": "inf",
+        "Land Vehicle": 1,
+        "Foot": 4
+    },
+    "Military": {
+        "Helicopter": 10,
+        "Boat": "inf",
+        "Land Vehicle": 10,
+        "Foot": 10
+    }
+}
