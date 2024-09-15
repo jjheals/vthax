@@ -70,7 +70,10 @@ This fall, we felt confident in our abilities; in mere hours we were able to acc
 
 ### New libraries, modules, & technologies
 
-
+- React
+- Leaflet.js
+- Flask
+- API integrations (OpenAI, OpenStreetMap, ...)
 
 ### Practice working with complex data structures
 
