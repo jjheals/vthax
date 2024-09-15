@@ -14,6 +14,7 @@ from utils import df_to_graph
 from country import get_country_from_coords
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
+from weather import find_best_time_window
 
 
 # ---- Init flask ---- #
