@@ -346,12 +346,17 @@ const Sidebar = ({ mapInstance }) => {
                     
                     {/* ChatGPT config section */}
                     <div className='sidebar-section'>
-                        <h3 className='sidebar-section-header'>OpenAI Configuration</h3>
-                        <p className='sidebar-subdesc'>
-                            This application uses <a href='https://openai.com'>OpenAI's</a> ChatGPT model for generating contextual mission plans and requires an 
-                            OpenAI API key. This application is not sponsored by or in direct cooperation with OpenAI. Your API key is not stored on the server and is discarded after use.
-                            If you do not supply an API key, then the application will still generate a mission plan but will lack an AI generated summary of the recommendations.
-                        </p>
+                        <div className='input-row'>
+                            <h3 className='sidebar-section-header'>OpenAI Configuration</h3>
+                            <div className='info-icon'>
+                                i
+                                <div className='info-tooltip' id='openai-disclaimer-tooltip'>
+                                    This application uses <a href='https://openai.com'>OpenAI's</a> ChatGPT model for generating contextual mission plans and requires an 
+                                    OpenAI API key. This application is not sponsored by or in direct cooperation with OpenAI. Your API key is not stored on the server and is discarded after use.
+                                    If you do not supply an API key, then the application will still generate a mission plan but will lack an AI generated summary of the recommendations.
+                                </div>
+                            </div>
+                        </div>
                    
                         <div className='input-row'>
                             <input name='openai-api-key' id='openai-api-key-input' placeholder='<your-openai-api-key>'></input>
