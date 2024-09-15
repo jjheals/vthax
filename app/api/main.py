@@ -2,25 +2,17 @@ from flask import Flask, request, jsonify
 from gevent.pywsgi import WSGIServer
 from flask_compress import Compress
 from flask_cors import CORS
+
 import pandas as pd
 import numpy as np
+import json
+
 from terrain import create_triangular_paths, fetch_terrain_for_paths, calculate_distance
-from flask_cors import CORS
-import pandas as pd
-import numpy as np
-from terrain import create_triangular_paths, fetch_terrain, calculate_distance
 from utils import df_to_graph
+from country import get_country_from_coords
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
 
-import json
-from country import get_country_from_coords
-import datetime as dt 
-from gpt_utils import get_chatgpt_response, format_prompt
-from path_model import get_top_5_combinations
-
-import json
-from country import get_country_from_coords
 import datetime as dt 
 
 
@@ -48,7 +40,7 @@ with open('../../data/static/cost-matrix.json', 'r') as file:
 def process_form_data(data):
 
     print(data)
-    
+
     # -- Generating paths -- #
     # Create paths with triangular deviations
     paths = create_triangular_paths(
