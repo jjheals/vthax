@@ -114,9 +114,9 @@ def process_form_data(data):
         weather_api_key = json.load(file)['api_key']
 
     # Best time window to execute the mission weatherwise
-    print("STARTING TO RUN PROCESS")
+    print("STARTING TO RUN WEATHER PROCESS")
     current_date = dt.datetime.now()
-    end_date = current_date + dt.timedelta(days=20)
+    end_date = dt.datetime.strptime(data['latest-date'], "%Y-%m-%d")
     best_time_window, best_vehicle, best_cost, best_weather_conditions = find_best_time_window(weather_api_key, data['end-lat'], data['end-lon'], current_date, min(end_date, current_date + dt.timedelta(days=10)), int(data['target-time-on-obj']), vehicles, data['strategy'], data['objective'])
     print(f"Best Time Window: {best_time_window}")
     print(f"Best Vehicle: {best_vehicle}")
