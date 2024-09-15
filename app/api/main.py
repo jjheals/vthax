@@ -8,6 +8,7 @@ from terrain import create_triangular_paths, fetch_terrain, calculate_distance
 from utils import df_to_graph
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
+from weather import find_best_time_window
 
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -151,9 +152,21 @@ def process_form_data(data):
     else: 
         response:str = "[Not given OpenAI API key or model name]"
 
-
     top_five_paths = get_top_5_combinations(terrain_count_with_paths, cost_matrix_json, vehicles)
     print("The top five paths are as follows: ", top_five_paths)
+
+    # Get the API Key for the weather functionality
+    with open('weather_api.json', 'r') as file:
+        weather_api_key = json.load(file)['api_key']
+
+    # Best time window to execute the mission weatherwise
+    print("STARTING TO RUN PROCESS")
+    current_date = dt.datetime.now()
+    end_date = current_date + dt.timedelta(days=20)
+    best_time_window, best_vehicle, best_cost, best_weather_conditions = find_best_time_window(weather_api_key, data['end-lat'], data['end-lon'], current_date, min(end_date, current_date + dt.timedelta(days=10)), int(data['target-time-on-obj']), vehicles, data['strategy'], data['objective'])
+    print(f"Best Time Window: {best_time_window}")
+    print(f"Best Vehicle: {best_vehicle}")
+    print(f"Weather Conditions: {best_weather_conditions}")
 
     # Return the result with paths and terrain counts
     return {
