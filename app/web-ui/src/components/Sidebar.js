@@ -5,7 +5,7 @@ import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
 import forge from 'node-forge';
-import { toTitleCase, getInputParamsData } from '../utils.js';
+import { toTitleCase, getInputParamsData, findLeastLatitude, findAverageLongitude } from '../utils.js';
 
 import '../css/Sidebar.css'; 
 
@@ -174,12 +174,16 @@ const Sidebar = ({ mapInstance }) => {
             // Get the response data and set the paths on the map
             const responseData = await response.json();
             setPossiblePaths(responseData.paths);
+            console.log(responseData.paths)
             
             console.log('responseData:', responseData);
 
+            console.log('Latitude: ', findLeastLatitude(responseData.paths))
+            console.log('Longitude: ', findAverageLongitude(responseData.paths))
+
             // Define coords to place the text box (aligns top left)
-            const lat = 51.505;
-            const lng = -0.09;
+            const lat = findLeastLatitude(responseData.paths) - 3;
+            const lng = findAverageLongitude(responseData.paths);
 
             // Create a custom divIcon with the AI response
             const textBoxIcon = L.divIcon({
