@@ -26,3 +26,19 @@ def df_to_graph(df:pd.DataFrame) -> nx.Graph:
 
     # Return the graph
     return G
+
+
+def key_with_lowest_sum(d):
+    min_sum = float('inf')  # Initialize to infinity
+    min_key = None
+
+    for key, subdict in d.items():
+        # Calculate the sum of values in the sub-dictionary
+        current_sum = sum(subdict.values())
+
+        # Update min_key if the current_sum is lower than min_sum
+        if current_sum < min_sum:
+            min_sum = current_sum
+            min_key = key
+
+    return min_key

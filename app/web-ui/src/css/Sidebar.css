@@ -31,6 +31,7 @@
     color: white;
     background-color: rgba(0, 0, 0, 0.704);
 }
+
 .sidebar { 
     position: fixed;
     top: 0;
@@ -215,17 +216,23 @@
 
 .ai-response-box h1 { 
     margin-top: 10px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .ai-response-box h2 { 
-    font-size: 16px;
+    font-size: 13px;
     margin-top: 7px;
     font-family: monospace;
 }
 
 .ai-response-box p { 
     font-size: 12px;
+}
+
+.subtitle { 
+    border-bottom: 1px solid darkblue;
+    font-size: 20px;
+    color: darkblue;
 }
 
 #openai-disclaimer-tooltip { 

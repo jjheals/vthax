@@ -10,7 +10,7 @@ import datetime as dt
 import random 
 
 from terrain import create_triangular_paths, fetch_terrain_for_paths, calculate_distance
-from utils import df_to_graph
+from utils import df_to_graph, key_with_lowest_sum
 from country import get_country_from_coords
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
@@ -118,16 +118,25 @@ def process_form_data(data):
     current_date = dt.datetime.now()
     end_date = dt.datetime.strptime(data['latest-date'], "%Y-%m-%d")
     best_time_window, best_vehicle, best_cost, best_weather_conditions = find_best_time_window(weather_api_key, data['end-lat'], data['end-lon'], current_date, min(end_date, current_date + dt.timedelta(days=10)), int(data['target-time-on-obj']), vehicles, data['strategy'], data['objective'])
+    
     print(f"Best Time Window: {best_time_window}")
     print(f"Best Vehicle: {best_vehicle}")
     print(f"Weather Conditions: {best_weather_conditions}")
+
+    best_weather_conditions = ', '.join(list(set(best_weather_conditions)))
 
     # Return the result with paths and terrain counts
     return {
         'status': 'success',
         'message': 'Form submitted successfully',
         'paths': terrain_count_with_paths,
-        'ai_response': response
+        'ai_response': response,
+        'optimal_set': {
+            'weather': best_weather_conditions,
+            'vehicle': best_vehicle,
+            'time_frame': best_time_window,
+            'path': key_with_lowest_sum(top_five_paths)
+        }
         #'top_paths': top_five_paths
     }
 

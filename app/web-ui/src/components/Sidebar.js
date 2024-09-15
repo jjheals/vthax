@@ -22,7 +22,6 @@ const Sidebar = ({ mapInstance }) => {
     const [strategyParams, setStrategyParams] = useState([]);
     const [objectiveParams, setObjectiveParams] = useState([]);
     const [possiblePaths, setPossiblePaths] = useState([]);
-    const [pathRanks, setPathRanks] = useState({});
     const [pathLayers, setPathLayers] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -185,7 +184,20 @@ const Sidebar = ({ mapInstance }) => {
             // Create a custom divIcon with the AI response
             const textBoxIcon = L.divIcon({
                 className: 'ai-response-box-container',
-                html: `<div class="ai-response-box">${responseData.ai_response}</div>`
+                html: `
+                    <div class="ai-response-box">
+                        <div class="subrow">
+                            <h1 class="subtitle">Optimal Mission Logistics</h1>
+                            <p>Based on your given parameters, constraints, and context, the optimal time for you to conduct the operation is on <strong>${responseData.optimal_set['time_frame']}</strong>.
+                            The weather this day will be <strong>${responseData.optimal_set['weather']}</strong>, which caters to travelling via <strong>${responseData.optimal_set['vehicle']}</strong> while prioritizing a 
+                            <strong>${formData.get('strategy')}</strong> strategy.</p><br><p>Based on statistical analysis, the best path for travelling to the objective is via 
+                            <strong>${responseData.optimal_set['path']}</strong>.</p>
+                        </div>
+                        <div class="subrow">
+                            <h1 class="subtitle">GPT Mission Plan</h1>
+                            ${responseData.ai_response}
+                        </div>
+                    </div>`
             });
 
             // Create a marker using the custom divIcon
