@@ -209,3 +209,9 @@
 .ai-response-box p { 
     font-size: 12px;
 }
+
+#openai-disclaimer-tooltip { 
+    min-width: 500px;
+    background-color: lightgrey;
+    color: black;
+}
