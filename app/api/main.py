@@ -6,14 +6,14 @@ from flask_cors import CORS
 import pandas as pd
 import numpy as np
 import json
+import datetime as dt 
+import random 
 
 from terrain import create_triangular_paths, fetch_terrain_for_paths, calculate_distance
 from utils import df_to_graph
 from country import get_country_from_coords
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
-
-import datetime as dt 
 
 
 # ---- Init flask ---- #
@@ -23,7 +23,7 @@ compress.init_app(app)
 
 # Init CORS with the URL of the React app
 CORS(app, origins=['http://localhost:3000'])
-CORS(app, origins=['http://localhost:3000'])
+
 
 # ---- Init backend ---- #
 # Load the data, graph, etc.
@@ -35,20 +35,19 @@ strategies_df:pd.DataFrame = pd.read_csv('../../data/static/strategy-definitions
 with open('../../data/static/cost-matrix.json', 'r') as file:
     cost_matrix_json:dict = json.load(file)
 
+
 # ---- PROCESSING ---- #
 
 def process_form_data(data):
-
-    print(data)
 
     # -- Generating paths -- #
     # Create paths with triangular deviations
     paths = create_triangular_paths(
         (float(data['start-lat']), float(data['start-lon'])),
         (float(data['end-lat']), float(data['end-lon'])),
-        5,  # Number of paths
-        4,  # Number of path breaks
-        0.4  # Deviation factor
+        5,                              # Number of paths
+        5,                              # Number of path breaks
+        round(random.uniform(0,1) ,1)   # Deviation factor
     )
 
     # Fetch terrain counts for each path
