@@ -5,7 +5,7 @@ import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
 import forge from 'node-forge';
-import { toTitleCase } from '../utils.js';
+import { toTitleCase, rankPaths } from '../utils.js';
 
 import '../css/Sidebar.css'; 
 
@@ -22,8 +22,14 @@ const Sidebar = ({ mapInstance }) => {
     const [strategyParams, setStrategyParams] = useState([]);
     const [objectiveParams, setObjectiveParams] = useState([]);
     const [possiblePaths, setPossiblePaths] = useState([]);
+    const [pathRanks, setPathRanks] = useState({});
     const [pathLayers, setPathLayers] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    // Calc 5 days from today for the max date
+    const today = new Date();
+    const futureDate = new Date(today);
+    futureDate.setDate(today.getDate() + 5);
 
     const colors = [
         'red',
@@ -75,7 +81,7 @@ const Sidebar = ({ mapInstance }) => {
 
         // Clear previous path layers from the map
         pathLayers.forEach(layer => mapInstance.removeLayer(layer));
-        
+
         // Create new path layers and store references
         var i = 0;
         const newPathLayers = Object.entries(paths).map(([pathName, pathInfo]) => {
@@ -170,6 +176,8 @@ const Sidebar = ({ mapInstance }) => {
             const responseData = await response.json();
             setPossiblePaths(responseData.paths);
             
+            console.log('responseData:', responseData);
+
             // Define coords to place the text box (aligns top left)
             const lat = 51.505;
             const lng = -0.09;
@@ -334,6 +342,11 @@ const Sidebar = ({ mapInstance }) => {
                                     ))
                                 }
                             </select>
+                        </div>
+
+                        <div className='input-row'>
+                            <label>Latest Date</label>
+                            <input type='date' name='latest-date' min={today.toISOString().split('T')[0]} max={futureDate.toISOString().split('T')[0]}></input>
                         </div>
                     </div>
 
