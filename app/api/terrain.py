@@ -60,8 +60,10 @@ def categorize_terrain(land_use_types):
     terrain_categories = {
         'forest': {'forest', 'wood', 'scrub'},
         'water': {'water', 'basin', 'reservoir', 'fish_farm', 'salt_pond', 'wetland', 'bay'},
-        'flatlands': {'meadow', 'grass', 'farmyard', 'farmland', 'orchard', 'vineyard', 'greenfield', 'plant_nursery', 'recreation_ground', 'allotments', 'cemetery', 'hot-spring'},
-        'urban': {'retail', 'commercial', 'industrial', 'brownfield', 'residential', 'construction', 'railway', 'recreation_ground', 'cemetery'},
+        'flatlands': {'meadow', 'grass', 'farmyard', 'farmland', 'orchard', 'vineyard', 'greenfield', 'plant_nursery', 'recreation_ground', 
+                      'allotments', 'cemetery', 'hot-spring'},
+        'urban': {'retail', 'commercial', 'industrial', 'brownfield', 'residential', 'construction', 'railway', 'recreation_ground', 'cemetery', 
+                    'place_of_worship', 'monastery', 'power', 'substation', 'wastewater_plant', 'landfill' },
         'transport': {'railway', 'port', 'aerodrome', 'parking', 'terminal'},
         'military': {'military'},
         'unknown': {'Unknown'}
