@@ -7,6 +7,7 @@ import numpy as np
 from terrain import create_triangular_paths, fetch_terrain, calculate_distance
 from utils import df_to_graph
 from gpt_utils import get_chatgpt_response, format_prompt
+from path_model import get_top_5_combinations
 
 from concurrent.futures import ThreadPoolExecutor
 import json
@@ -29,6 +30,9 @@ vehicles_df: pd.DataFrame = pd.read_csv('../../data/static/vehicle-definitions.c
 terrain_df: pd.DataFrame = pd.read_csv('../../data/static/terrain-definitions.csv')
 terrain_vehicle_matrix: np.matrix = df_to_graph(pd.read_csv('../../data/static/terrain-vehicle-matrix.csv'))
 strategies_df:pd.DataFrame = pd.read_csv('../../data/static/strategy-definitions.csv')
+
+with open('../../data/static/cost-matrix.json', 'r') as file:
+    cost_matrix_json:dict = json.load(file)
 
 # ---- PROCESSING ---- #
 
@@ -146,6 +150,10 @@ def process_form_data(data):
         )
     else: 
         response:str = "[Not given OpenAI API key or model name]"
+
+
+    top_five_paths = get_top_5_combinations(terrain_count_with_paths, cost_matrix_json, vehicles)
+    print("The top five paths are as follows: ", top_five_paths)
 
     # Return the result with paths and terrain counts
     return {
