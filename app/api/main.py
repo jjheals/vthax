@@ -5,7 +5,19 @@ from flask_cors import CORS
 import pandas as pd
 import numpy as np
 from terrain import create_triangular_paths, fetch_terrain, calculate_distance
+from flask_cors import CORS
+import pandas as pd
+import numpy as np
+from terrain import create_triangular_paths, fetch_terrain, calculate_distance
 from utils import df_to_graph
+from gpt_utils import get_chatgpt_response, format_prompt
+from path_model import get_top_5_combinations
+
+from concurrent.futures import ThreadPoolExecutor
+import json
+from collections import Counter
+from country import get_country_from_coords
+import datetime as dt 
 from gpt_utils import get_chatgpt_response, format_prompt
 from path_model import get_top_5_combinations
 
@@ -22,6 +34,7 @@ compress = Compress()
 compress.init_app(app)
 
 # Init CORS with the URL of the React app
+CORS(app, origins=['http://localhost:3000'])
 CORS(app, origins=['http://localhost:3000'])
 
 # ---- Init backend ---- #
@@ -187,6 +200,34 @@ def get_input_params():
                 'vehicle-name': r['vehicle_name'],
                 'vehicle-description': r['description']
             } for idx, r in vehicles_df.iterrows()
+        ],
+        'strategies': [
+            {
+                'strategy-id': 'aggressive',
+                'strategy-name': 'Aggressive'
+            },
+            {
+                'strategy-id': 'stealth',
+                'strategy-name': 'Stealth'
+            }
+        ],
+        'objectives': [
+            {
+                'objective-id': 'def',
+                'objective-name': 'Defensive (Hold position)'
+            },
+            {
+                'objective-id': 'hvt',
+                'objective-name': 'Capture/Extract HVT'
+            },
+            {
+                'objective-id': 'inf',
+                'objective-name': 'Infiltrate Target'
+            }
+        ]
+    }
+
+    return jsonify({'data': data})
         ],
         'strategies': [
             {

@@ -35,6 +35,7 @@ const Sidebar = ({ mapInstance }) => {
         'grey'
     ]
 
+<<<<<<< HEAD
     // Define the API base URL for transitions between dev/prod
     const apiBaseUrl = 'http://127.0.0.1:8000/api'
 
@@ -44,6 +45,10 @@ const Sidebar = ({ mapInstance }) => {
      * @param { Array<Object> } terrainCounts 
      * @returns { Array<Array<String, Number>>} list of tuples containing the terrain (Title Case) and % it appears
      */
+=======
+
+    // Function to determine class label based on terrain counts
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
     function getClassLabels(terrainCounts) {
         // Example logic for determining class label
         // Customize this based on your classification criteria
@@ -59,7 +64,10 @@ const Sidebar = ({ mapInstance }) => {
         return classes;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
     /**
      * @constant toggleSidebar event handler for toggling hiding/showing the sidebar.
      * @returns { null }
@@ -153,12 +161,19 @@ const Sidebar = ({ mapInstance }) => {
             }
         });
 
+<<<<<<< HEAD
         // Create a FormData obj with the data from the form
+=======
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
         const formData = new FormData(e.target);
 
         try {
             // Send the FormData object to the API
+<<<<<<< HEAD
             const response = await fetch(`${apiBaseUrl}/submit-form`, {
+=======
+            const response = await fetch('http://localhost:8000/submit-form', {
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
                 method: 'POST',
                 body: formData,
             });
@@ -172,7 +187,11 @@ const Sidebar = ({ mapInstance }) => {
             const responseData = await response.json();
             setPossiblePaths(responseData.paths);
             
+<<<<<<< HEAD
             // Define coords to place the text box (aligns top left)
+=======
+            // Example coordinates where you want to place the text box
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
             const lat = 51.505;
             const lng = -0.09;
 
@@ -185,6 +204,7 @@ const Sidebar = ({ mapInstance }) => {
             // Create a marker using the custom divIcon
             const marker = L.marker([lat, lng], { icon: textBoxIcon }).addTo(mapInstance);
             
+<<<<<<< HEAD
             // Disable scroll now that the text box is there that allows scroll inside 
             mapInstance.scrollWheelZoom.disable();
 
@@ -193,6 +213,12 @@ const Sidebar = ({ mapInstance }) => {
             console.error('Error:', error);
 
         // No longer loading
+=======
+            mapInstance.scrollWheelZoom.disable();
+
+        } catch (error) {
+            console.error('Error:', error);
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
         } finally { 
             setLoading(false);
         }
@@ -205,7 +231,11 @@ const Sidebar = ({ mapInstance }) => {
      */
     async function getInputParamsData() { 
         // Get the data from the API 
+<<<<<<< HEAD
         const response = await fetch(`${apiBaseUrl}/get-input-params`, options);
+=======
+        const response = await fetch('http://localhost:8000/get-input-params', options);
+>>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
         const responseJson = await response.json();
         return responseJson;
     }
