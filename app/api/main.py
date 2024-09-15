@@ -228,34 +228,6 @@ def get_input_params():
     }
 
     return jsonify({'data': data})
-        ],
-        'strategies': [
-            {
-                'strategy-id': 'aggressive',
-                'strategy-name': 'Aggressive'
-            },
-            {
-                'strategy-id': 'stealth',
-                'strategy-name': 'Stealth'
-            }
-        ],
-        'objectives': [
-            {
-                'objective-id': 'def',
-                'objective-name': 'Defensive (Hold position)'
-            },
-            {
-                'objective-id': 'hvt',
-                'objective-name': 'Capture/Extract HVT'
-            },
-            {
-                'objective-id': 'inf',
-                'objective-name': 'Infiltrate Target'
-            }
-        ]
-    }
-
-    return jsonify({'data': data})
 
 
 # ---- Run forever ---- $

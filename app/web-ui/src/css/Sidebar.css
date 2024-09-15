@@ -19,10 +19,6 @@
     }
 }
 
-<<<<<<< HEAD
-=======
-  
->>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
 .sidebar { 
     position: fixed;
     top: 0;
@@ -53,13 +49,10 @@
     transform: translateX(-100%);
 }
 
-<<<<<<< HEAD
 .sidebar-section { 
     margin-top: 2vh;
 }
 
-=======
->>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
 .sidebar-title, .sidebar-section-header { 
     font-family: monospace;
 }
@@ -74,11 +67,8 @@
 .sidebar-section-header { 
     font-size: 20px;
     color: black;
-<<<<<<< HEAD
     border-bottom: 1px solid grey;
     padding-bottom: 2px;
-=======
->>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
 }
 
 .sidebar-subdesc { 
@@ -93,20 +83,13 @@
     padding: 0;
     height: 30px; /* Adjust height as needed */
     margin-bottom: 2px;
-<<<<<<< HEAD
     margin-top: 0.5vh;
-=======
->>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
 }
 
 .input-row label { 
     font-family:'Courier New', Courier, monospace;
     font-weight: bold;
-<<<<<<< HEAD
     font-size: 16px;
-=======
-    font-size: 18px;
->>>>>>> 29f1cfa2095117ac06c987c9c4372074cd507ebb
     margin-right: 10px;
 }
 
