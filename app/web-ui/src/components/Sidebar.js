@@ -57,7 +57,7 @@ const Sidebar = ({ mapInstance }) => {
         }, 0);
 
         Object.entries(terrainCounts).forEach(([terrain, count]) => {
-            classes.push([toTitleCase(terrain), count / numClassifications])
+            classes.push([toTitleCase(terrain), Math.round((count / numClassifications) * 100)])
         })
 
         return classes;
@@ -112,7 +112,7 @@ const Sidebar = ({ mapInstance }) => {
                         <table class="polyline-table">
                             <thead><th>Terrain</th><th>Percentage</th></thead>
                             <tbody>
-                                ${terrainLabels.map(tup => `<tr><td>${tup[0]}</td><td>${tup[1] * 100}%</td></tr>`).join('')}
+                                ${terrainLabels.map(tup => `<tr><td>${tup[0]}</td><td>${tup[1]}%</td></tr>`).join('')}
                             </tbody>
                         </table>
                     </div>`, 
