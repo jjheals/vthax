@@ -7,6 +7,11 @@ export function toTitleCase(str) {
 }
 
 
+/**
+ * @deprecated
+ * @param { Object } pathRanks 
+ * @returns 
+ */
 export function rankPaths(pathRanks) { 
     const totalCosts = Object.keys(pathRanks).map(path => {
         const costs = Object.values(pathRanks[pathRanks]);
@@ -19,4 +24,17 @@ export function rankPaths(pathRanks) {
     
     // Return
     return totalCosts
+}
+
+
+
+/**
+ * @function getInputParamsData retrieves the data from the API on init of the page.
+ * @returns { null }
+ */
+export async function getInputParamsData(apiBaseUrl, options) { 
+    // Get the data from the API 
+    const response = await fetch(`${apiBaseUrl}/get-input-params`, options);
+    const responseJson = await response.json();
+    return responseJson;
 }

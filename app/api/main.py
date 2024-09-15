@@ -42,12 +42,15 @@ def process_form_data(data):
 
     # -- Generating paths -- #
     # Create paths with triangular deviations
+    start_point:tuple[float, float] = (float(data['start-lat']), float(data['start-lon']))
+    end_point:tuple[float, float] = (float(data['end-lat']), float(data['end-lon']))
+
     paths = create_triangular_paths(
-        (float(data['start-lat']), float(data['start-lon'])),
-        (float(data['end-lat']), float(data['end-lon'])),
+        start_point,
+        end_point,
         5,                              # Number of paths
-        5,                              # Number of path breaks
-        round(random.uniform(0,1) ,1)   # Deviation factor
+        4,
+        round(random.uniform(0,1), 1)   # Deviation factor
     )
 
     # Fetch terrain counts for each path

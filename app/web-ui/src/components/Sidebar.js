@@ -5,7 +5,7 @@ import Hamburger from './Hamburger';
 import { options } from '../config.js';
 import L from 'leaflet';
 import forge from 'node-forge';
-import { toTitleCase, rankPaths } from '../utils.js';
+import { toTitleCase, getInputParamsData } from '../utils.js';
 
 import '../css/Sidebar.css'; 
 
@@ -205,25 +205,13 @@ const Sidebar = ({ mapInstance }) => {
     }
 
 
-    /**
-     * @function getInputParamsData retrieves the data from the API on init of the page.
-     * @returns { null }
-     */
-    async function getInputParamsData() { 
-        // Get the data from the API 
-        const response = await fetch(`${apiBaseUrl}/get-input-params`, options);
-        const responseJson = await response.json();
-        return responseJson;
-    }
-
-
     // useEffect() => inits the page on load
     useEffect(() => { 
 
         // Async helper to fetch the input params using getInputParamsData
         async function fetchInputParams() {
             try {
-                const data = (await getInputParamsData()).data;
+                const data = (await getInputParamsData(apiBaseUrl, options)).data;
                 setInputParams(data);
             } catch (error) {
                 console.error("Error fetching input params:", error);
@@ -261,6 +249,7 @@ const Sidebar = ({ mapInstance }) => {
 
             {/* Spinner */}
             {loading && <div className="spinner"></div>}
+            {loading && <div className='spinner-msg'>This may take a few minutes...</div>}
 
             <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
             <h2 className='sidebar-title'>User Input Parameters</h2>

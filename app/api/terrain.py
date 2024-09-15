@@ -98,6 +98,7 @@ def interpolate_point(p1:tuple[float, float], p2:tuple[float, float], t:float) -
     Returns:
         tuple[float, float]: interpolated point (lat, lon).
     """
+    print(t)
     return (p1[0] * (1 - t) + p2[0] * t, p1[1] * (1 - t) + p2[1] * t)
 
 

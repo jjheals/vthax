@@ -19,6 +19,18 @@
     }
 }
 
+.spinner-msg { 
+    position: absolute;
+    width: 20vw;
+    left: 40vw;
+    top: 40%;
+    text-align: center;
+    z-index: 4000;
+    font-weight: bold;
+    padding: 7px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.704);
+}
 .sidebar { 
     position: fixed;
     top: 0;
