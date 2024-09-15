@@ -57,21 +57,25 @@ def fetch_terrain(lat, lon):
 
 def categorize_terrain(land_use_types):
     """Categorize terrain based on land use types."""
-    terrain_categories = {
-        'forest': {'forest', 'wood', 'scrub'},
-        'water': {'water', 'basin', 'reservoir', 'fish_farm', 'salt_pond', 'wetland', 'bay'},
-        'flatlands': {'meadow', 'grass', 'farmyard', 'farmland', 'orchard', 'vineyard', 'greenfield', 'plant_nursery', 'recreation_ground', 
-                      'allotments', 'cemetery', 'hot-spring'},
-        'urban': {'retail', 'commercial', 'industrial', 'brownfield', 'residential', 'construction', 'railway', 'recreation_ground', 'cemetery', 
-                    'place_of_worship', 'monastery', 'power', 'substation', 'wastewater_plant', 'landfill' },
-        'transport': {'railway', 'port', 'aerodrome', 'parking', 'terminal'},
-        'military': {'military'},
-        'unknown': {'Unknown'}
-    }
+    # terrain_categories = {
+    #     'forest': {'forest', 'wood', 'scrub'},
+    #     'water': {'water', 'basin', 'reservoir', 'fish_farm', 'salt_pond', 'wetland', 'bay'},
+    #     'flatlands': {'meadow', 'grass', 'farmyard', 'farmland', 'orchard', 'vineyard', 'greenfield', 'plant_nursery', 'recreation_ground', 
+    #                   'allotments', 'cemetery', 'hot-spring'},
+    #     'urban': {'retail', 'commercial', 'industrial', 'brownfield', 'residential', 'construction', 'railway', 'recreation_ground', 'cemetery', 
+    #                 'place_of_worship', 'monastery', 'power', 'substation', 'wastewater_plant', 'landfill' },
+    #     'transport': {'railway', 'port', 'aerodrome', 'parking', 'terminal'},
+    #     'military': {'military'},
+    #     'unknown': {'Unknown'}
+    # }
+
+    with open('terrain.json', 'r') as file:
+        data = json.load(file)
+        terrain_categories = data["terrain_categories"]
 
     categorized_terrain = set()
     for category, types in terrain_categories.items():
-        if land_use_types & types:
+        if land_use_types & set(types):
             categorized_terrain.add(category)
     
     return categorized_terrain
