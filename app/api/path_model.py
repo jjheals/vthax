@@ -2,6 +2,21 @@ import pandas as pd
 import numpy as np
 import json
 
+
+# Function to calculate cost for a given path
+def calculate_path_costs(terrain_counts, vehicle, costs_matrix):
+    total_cost = 0
+    for terrain, count in terrain_counts.items():
+        if count > 0:
+            if terrain in costs_matrix.index:
+                cost = costs_matrix.at[terrain, vehicle]
+                if pd.notna(cost):
+                    total_cost += cost * count
+                else:
+                    total_cost += np.inf  # Impossible route, so set to infinity
+    return total_cost if total_cost != np.inf else np.nan
+
+
 def get_top_5_combinations(terrain_data, cost_matrix, vehicles):
     # Extract and reformat the terrain counts
     static_path_data = {}
@@ -30,19 +45,6 @@ def get_top_5_combinations(terrain_data, cost_matrix, vehicles):
     terrain_df = terrain_df[common_terrains]
     costs_matrix = costs_matrix.loc[common_terrains]
 
-    # Function to calculate cost for a given path
-    def calculate_path_costs(terrain_counts, vehicle, costs_matrix):
-        total_cost = 0
-        for terrain, count in terrain_counts.items():
-            if count > 0:
-                if terrain in costs_matrix.index:
-                    cost = costs_matrix.at[terrain, vehicle]
-                    if pd.notna(cost):
-                        total_cost += cost * count
-                    else:
-                        total_cost += np.inf  # Impossible route, so set to infinity
-        return total_cost if total_cost != np.inf else np.nan
-
     # Calculate costs for each vehicle
     all_costs = []
     for vehicle in vehicles:
@@ -58,7 +60,8 @@ def get_top_5_combinations(terrain_data, cost_matrix, vehicles):
 
     # Get top 5 path/vehicle combinations
     top_5_combos = cost_df.head(5)
-
+    cost_df = cost_df.fillna('Impossible')
+    
     # Format output for top 5 combos
     top_5_dict = {}
     for _, row in top_5_combos.iterrows():

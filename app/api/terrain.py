@@ -2,6 +2,7 @@ import requests
 from collections import Counter
 from geopy.distance import geodesic
 import numpy as np
+from concurrent.futures import ThreadPoolExecutor
 import json 
 
 
@@ -97,6 +98,7 @@ def interpolate_point(p1:tuple[float, float], p2:tuple[float, float], t:float) -
     Returns:
         tuple[float, float]: interpolated point (lat, lon).
     """
+    print(t)
     return (p1[0] * (1 - t) + p2[0] * t, p1[1] * (1 - t) + p2[1] * t)
 
 
@@ -153,3 +155,56 @@ def create_triangular_paths(start:tuple[float, float], end:tuple[float, float], 
         paths.append(path)
     
     return paths
+
+
+def fetch_terrain_for_single_path(path):
+    """Fetch terrain info for a single path and count terrain types."""
+    terrain_counts = Counter()
+    for lat, lon in path:
+        try:
+            terrain_info = fetch_terrain(lat, lon)
+            terrain_types = terrain_info.split(', ')
+            for terrain_type in terrain_types:
+                if terrain_type != "Unknown":
+                    terrain_counts[terrain_type] += 1
+        except Exception as e:
+            print(f"Error fetching terrain for ({lat}, {lon}): {e}")
+
+    # Fetch terrain for midpoints as well
+    for i in range(len(path) - 1):
+        lat1, lon1 = path[i]
+        lat2, lon2 = path[i + 1]
+
+        # Compute midpoint
+        mid_lat = (lat1 + lat2) / 2
+        mid_lon = (lon1 + lon2) / 2
+
+        try:
+            terrain_info = fetch_terrain(mid_lat, mid_lon)
+            for terrain_type in terrain_info.split(', '):
+                if terrain_type != "Unknown":
+                    terrain_counts[terrain_type] += 1
+        except Exception as e:
+            print(f"Error fetching terrain for midpoint ({mid_lat}, {mid_lon}): {e}")
+
+    return terrain_counts
+
+
+def fetch_terrain_for_paths(paths):
+    """Fetch terrain information for each path and count occurrences of each terrain type."""
+    
+    # Use ThreadPoolExecutor to process each path in parallel
+    with ThreadPoolExecutor(max_workers=min(len(paths), 10)) as executor:
+        # Map paths to the terrain counting function
+        terrain_counts_list = list(executor.map(fetch_terrain_for_single_path, paths))
+
+    # Convert to the required format
+    result = {
+        f'Path {i + 1}': {
+            'path': paths[i],
+            'terrain_counts': dict(terrain_counts_list[i])
+        }
+        for i in range(len(paths))
+    }
+
+    return result

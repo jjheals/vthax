@@ -6,24 +6,6 @@ def format_prompt(inputs: dict) -> str:
     The inputs should match the form data and all must be included."""
 
     prompt_template = """
-        I am conducting a military operation. I have the following available vehicles: {}.
-        My starting location is at lat: {}, long: {}, in {}. My target is at lat: {}, long: {}, 
-        which is about {} km from my starting location. I expect the following terrains: {}.
-        I have {} total personnel. Based on previously acquired intelligence, my target time 
-        on objective is {} hours, and I expect {} resistance once on target. I want to conduct 
-        a {} mission, specifically {}. My primary objective is to {}. {}
-        Create a detailed plan for me to conduct an operation under these circumstances. Give 
-        me the response in a pretty HTML format that I can display on a webpage. Put headers 
-        in <h1> tags, and any body content in <p> tags. Just give me the content of your 
-        recommendation, no disclaimers or anything extra. I want as much detail as possible, 
-        especailly around the execution of the operation. I do not need you to re-summarize the 
-        parameters I just told you. Aim for about 500-600 words.
-    """.strip()
-
-    print('VEHICLES')
-    print(inputs.get('vehicles'))
-
-    prompt_template2 = """
         Create a detailed operations plan for a military operation within the following parameters:
         I have the following available vehicles: {}. If a vehicle is not listed, assume I do not 
         have it. My starting location is at lat: {}, long: {}, in {}. My target is at lat: {}, 
@@ -40,7 +22,7 @@ def format_prompt(inputs: dict) -> str:
 
     additional_context:str = inputs.get('additional-context', '')
 
-    return prompt_template2.format(
+    return prompt_template.format(
         ', '.join(inputs.get('vehicles', [])),        # Available vehicles
         inputs['start-location'][0],               # Starting lat
         inputs['start-location'][1],               # Starting lon
